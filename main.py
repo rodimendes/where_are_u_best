@@ -1,11 +1,18 @@
-import requests
-from bs4 import BeautifulSoup
+import getting_data
 
-endpoint = "https://en.wikipedia.org/wiki/Beatriz_Haddad_Maia#Singles:_25_(17_titles,_8_runner%E2%80%93ups)"
-# local_endpoint = "Beatriz Haddad Maia _ Player Stats & More – WTA Official.html"
+# # Getting source code
+# url = 'https://www.wtatennis.com/players/318176/beatriz-haddad-maia#matches'
+# codigoFonte = get_source_code(url)
 
-response = requests.get(endpoint).text
+# # Getting main tennis player
+# print(get_player_name("bia_data.html"))
 
-soup = BeautifulSoup(response, "html.parser")
+# # Getting opponents list
+# print(getting_data.get_last_opponents("bia_data.html"))
 
-print(soup.text)
+# data = get_tournament_info("bia_data.html")
+# for place in data[:3]:
+#     opponent = place.find("span", class_="player-matches__match-opponent-last")
+#     print(opponent.text)
+
+getting_data.get_score("bia_data.html")
