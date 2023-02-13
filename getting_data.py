@@ -85,8 +85,51 @@ def win_loss(source_code):
     return cleaned_results
 
 
-def get_data():
-    pass
+def get_month(source_code):
+    with open(source_code, "r") as file_to_read:
+        soup = BeautifulSoup(file_to_read, 'html.parser')
+    tournaments = soup.find_all("div", class_="player-matches__tournament")
+    raw_event_date = [tournament.find("span", class_="player-matches__tournament-date").text.split() for tournament in tournaments]
+    # event_date = []
+    month = [date[1] for date in raw_event_date]
+    # for date in raw_event_date:
+    #     month = date[1]
+    #     year = date[-1]
+    #     event_date.append([month, year])
+    return month
+
+
+def get_year(source_code):
+    with open(source_code, "r") as file_to_read:
+        soup = BeautifulSoup(file_to_read, 'html.parser')
+    tournaments = soup.find_all("div", class_="player-matches__tournament")
+    raw_event_date = [tournament.find("span", class_="player-matches__tournament-date").text.split() for tournament in tournaments]
+    year = [date[-1] for date in raw_event_date]
+    return year
+
+
+def get_tournament_city(source_code):
+    with open(source_code, "r") as file_to_read:
+        soup = BeautifulSoup(file_to_read, 'html.parser')
+    raw_cities = soup.find_all("span", class_="player-matches__tournament-location")
+    cities = [city.text.split(",")[0] for city in raw_cities]
+    return cities
+
+
+def get_surface(source_code):
+    with open(source_code, "r") as file_to_read:
+        soup = BeautifulSoup(file_to_read, 'html.parser')
+    filtered_data = soup.find_all("div", class_="player-matches__tournament-meta-item")
+    surfaces = []
+    for surface in filtered_data:
+        surface_type = surface.text
+        if "Surface" in surface_type:
+            surfaces.append(surface_type.split()[1])
+        # if "Surface" in surface_type:
+        #     print(surface_type)
+    # for pos, surface in enumerate(raw_surfaces):
+    #     print(f"{pos} - {surface}")
+    return surfaces
 
 
 def get_tournament_info(source_code):
@@ -104,10 +147,11 @@ def build_database(source_code):
         get_last_opponents(source_code),
         get_score(source_code),
         win_loss(source_code),
-        date,
-        city,
-        surface,
-        time,
+        get_month(source_code),
+        get_year(source_code),
+        get_tournament_city(source_code),
+        get_surface(source_code),
+        time, # https://www.flashscore.pt/jogador/haddad-maia-beatriz/lSABz6E8/resultados/#s
         temperature,
         umidity,
         hand_player,
