@@ -1,5 +1,6 @@
 import requests
 import pickle
+import os
 
 
 # TODO Get city name
@@ -9,7 +10,7 @@ import pickle
 # # Indian Wells. Current weather and forecast for 8 days
 lat = 33.721550
 long = -116.326797
-api_key = "50c5ad37944581cfe4188ae427c6ebc2"
+api_key = os.environ.get("OPENWEATHER_KEY")
 
 parameters = {
         "appid": api_key,
