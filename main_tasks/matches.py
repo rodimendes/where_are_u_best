@@ -8,6 +8,7 @@ import pickle
 import datetime as dt
 import os
 
+
 def get_source_code(url, player_name: str):
     service = Service(ChromeDriverManager().install())
     chrome_options = webdriver.ChromeOptions()
@@ -112,7 +113,7 @@ def get_matches_info_to_dict(source_code):
 
 def to_dataframe(player_name: str, player_matches: dict):
     matches_df = pd.DataFrame(player_matches, columns=[column for column in player_matches.keys()])
-    with open(f"dataframes/{player_name}-{dt.date.today()}.pkl", "wb") as file:
+    with open(f"dataframes/{player_name}-{dt.date.today()}.pkl", "a") as file:
         pickle.dump(matches_df, file)
     return matches_df
 
@@ -154,3 +155,19 @@ def to_database(dataframe):
         print("Please, insert a dataframe object to load it into the database.")
 
     return
+
+
+def get_data_from_db():
+    connection = mysql.connector.connect(
+        user = 'root',
+        password = os.environ.get("LOCALPASSWORD"),
+        host = 'localhost',
+        database = os.environ.get("LOCAL_DATABASE")
+    )
+
+    with connection.cursor() as cursor:
+        query = "SELECT * FROM matches"
+        cursor.execute(query)
+        content = cursor.fetchall()
+
+    return content
