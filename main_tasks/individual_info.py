@@ -4,6 +4,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 
 def get_source_code(url):
+    """
+    Gets and saves the html code.
+    """
     service = Service(ChromeDriverManager().install())
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless')
@@ -14,6 +17,9 @@ def get_source_code(url):
 
 
 def get_player_name(source_code):
+    """
+    Gets player name from the source code.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
         player_name = soup.title.string
@@ -22,6 +28,9 @@ def get_player_name(source_code):
 
 
 def get_last_opponents(source_code):
+    """
+    Gets last opponents from the player under analysis.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
     raw_opponents_fname = soup.find_all("span", class_="player-matches__match-opponent-first u-hide-tablet")
@@ -35,6 +44,9 @@ def get_last_opponents(source_code):
 
 
 def get_score(source_code):
+    """
+    Gets last scores from the player under analysis.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
     results = []
@@ -56,6 +68,9 @@ def get_score(source_code):
 
 
 def win_loss(source_code):
+    """
+    Gets final result from last matches.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
     raw_results = soup.find_all("td", class_="player-matches__match-cell player-matches__match-cell--winloss")
@@ -64,6 +79,9 @@ def win_loss(source_code):
 
 
 def get_month(source_code):
+    """
+    Gets months from last matches.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
     tournaments = soup.find_all("div", class_="player-matches__tournament")
@@ -73,6 +91,9 @@ def get_month(source_code):
 
 
 def get_year(source_code):
+    """
+    Gets years from last matches.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
     tournaments = soup.find_all("div", class_="player-matches__tournament")
@@ -82,6 +103,9 @@ def get_year(source_code):
 
 
 def get_tournament_city(source_code):
+    """
+    Gets the cities where the last matches were played.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
     raw_cities = soup.find_all("span", class_="player-matches__tournament-location")
@@ -90,6 +114,9 @@ def get_tournament_city(source_code):
 
 
 def get_surface(source_code):
+    """
+    Gets the surface where the last matches were played.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
     filtered_data = soup.find_all("div", class_="player-matches__tournament-meta-item")
@@ -102,8 +129,11 @@ def get_surface(source_code):
 
 
 def get_tournament_info(source_code):
+    """
+    Gets the tournament names where the last matches were played.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
-        all_tournaments = soup.find_all("a", class_="player-matches__tournament-title-link")
+        all_tournaments = soup.find_all("h2", class_="player-matches__tournament-title")
         tournament = [tournament.text.strip() for tournament in all_tournaments]
         return tournament

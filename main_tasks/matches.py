@@ -7,19 +7,30 @@ import pandas as pd
 import pickle
 import datetime as dt
 import os
+from glob import glob
+import time
 
 
-def get_source_code(url, player_name: str):
+def get_source_code(url):
+    """
+    Gets the source code and saves it for further verifications.
+    The function returns the path to 'html' file and the player name.
+    """
     service = Service(ChromeDriverManager().install())
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless')
     driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
     driver.get(url)
+    player_name = url.split("/")[-1].split("#")[0]
     with open(f"html_player_source_code/{player_name}-{dt.date.today()}.html", "w") as file:
         file.write(driver.page_source)
+    return f"html_player_source_code/{player_name}-{dt.date.today()}.html", player_name
 
 
 def get_matches_info_to_dict(source_code):
+    """
+    Receives the source code as html file and gets 'main player', 'opponent', 'tournament', 'city', 'scores', 'result' and 'surface' from last matches, returning a dictionary.
+    """
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
         tournaments = soup.find_all("div", class_="player-matches__tournament")
@@ -35,7 +46,7 @@ def get_matches_info_to_dict(source_code):
         for tournament in tournaments:
 
             # Tournament Name
-            tournament_name = tournament.find("a", class_="player-matches__tournament-title-link").text.strip()
+            tournament_name = tournament.find("h2", class_="player-matches__tournament-title").text.strip()
 
             # City
             city = tournament.find("span", class_="player-matches__tournament-location").text.split(",")[0]
@@ -112,14 +123,34 @@ def get_matches_info_to_dict(source_code):
 
 
 def to_dataframe(player_name: str, player_matches: dict):
+    """
+    Receives a dictionary and player name, saving for dataframe format.
+    If there is an older file for the same player, checks for duplicate data e returns only the new data.
+    """
     matches_df = pd.DataFrame(player_matches, columns=[column for column in player_matches.keys()])
-    with open(f"dataframes/{player_name}-{dt.date.today()}.pkl", "a") as file:
-        pickle.dump(matches_df, file)
-    return matches_df
+    old_file = glob(f"dataframes/{player_name}*")
+    if len(old_file) == 0:
+        with open(f"dataframes/{player_name}-{dt.date.today()}.pkl", "wb") as file:
+            pickle.dump(matches_df, file)
+        print("Saving full file.")
+        return matches_df
+    else:
+        with open(old_file[0], "rb") as file:
+            old_data = pickle.load(file)
+        full_data = pd.concat([old_data, matches_df])
+        time.sleep(1)
+        cleaned_data = full_data.drop_duplicates(keep=False)
+        time.sleep(1)
+        with open(f"dataframes/{player_name}-{dt.date.today()}.pkl", "wb") as file:
+            pickle.dump(cleaned_data, file)
+        print("Dropped duplicated data and saved just new data")
+        return cleaned_data
 
 
-def to_database(dataframe):
-
+def to_database(dataframe: pd.DataFrame):
+    """
+    Checks the dataframe for new data and, if so, loads it into database for further analysis.
+    """
     # connection = mysql.connector.connect(
     #     user = os.environ.get("AWSUSER"), # nome usuário principal
     #     password = os.environ.get("AWSPASSWORD"),
@@ -135,8 +166,10 @@ def to_database(dataframe):
         database = os.environ.get("LOCAL_DATABASE")
     )
 
-    # Checking if the variable dataframe is, in fact, a dataframe object to load into the database
-    if isinstance(dataframe, pd.DataFrame):
+    if dataframe.shape[0] == 0:
+        print("Database up to date. No data to load.")
+        return
+    else:
         with connection.cursor() as cursor:
             for index, row in dataframe.iterrows():
                 player = row["main_player"]
@@ -151,13 +184,13 @@ def to_database(dataframe):
                 connection.commit()
         print("Data uploaded successfully")
 
-    else:
-        print("Please, insert a dataframe object to load it into the database.")
-
     return
 
 
 def get_data_from_db():
+    """
+    Runs a query for all records in the table.
+    """
     connection = mysql.connector.connect(
         user = 'root',
         password = os.environ.get("LOCALPASSWORD"),
