@@ -8,7 +8,6 @@ import pickle
 import datetime as dt
 import os
 from glob import glob
-import time
 
 
 def get_source_code(url):
@@ -127,24 +126,21 @@ def to_dataframe(player_name: str, player_matches: dict):
     Receives a dictionary and player name, saving for dataframe format.
     If there is an older file for the same player, checks for duplicate data e returns only the new data.
     """
-    matches_df = pd.DataFrame(player_matches, columns=[column for column in player_matches.keys()])
     old_file = glob(f"dataframes/{player_name}*")
-    if len(old_file) == 0:
-        with open(f"dataframes/{player_name}-{dt.date.today()}.pkl", "wb") as file:
-            pickle.dump(matches_df, file)
-        print("Saving full file.")
-        return matches_df
-    else:
+    matches_df = pd.DataFrame(player_matches, columns=[column for column in player_matches.keys()])
+    with open(f"dataframes/{player_name}-{dt.date.today()}.pkl", "wb") as file:
+        pickle.dump(matches_df, file)
+        print("Saving the latest file.")
+    if len(old_file) != 0:
         with open(old_file[0], "rb") as file:
             old_data = pickle.load(file)
         full_data = pd.concat([old_data, matches_df])
-        time.sleep(1)
         cleaned_data = full_data.drop_duplicates(keep=False)
-        time.sleep(1)
-        with open(f"dataframes/{player_name}-{dt.date.today()}.pkl", "wb") as file:
-            pickle.dump(cleaned_data, file)
-        print("Dropped duplicated data and saved just new data")
+        print("Dropped duplicated data")
+        os.remove(old_file[0])
+        print("")
         return cleaned_data
+    return matches_df
 
 
 def to_database(dataframe: pd.DataFrame):
