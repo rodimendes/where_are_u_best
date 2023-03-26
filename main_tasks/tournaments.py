@@ -16,7 +16,7 @@ def get_data_source(url):
     service = Service(ChromeDriverManager().install())
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless')
-    driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get(url)
     with open(f"tournaments_files/tournaments_list.html", "w") as file:
         file.write(driver.page_source)
@@ -62,9 +62,20 @@ def to_dataframe(tournaments: dict):
     The tournaments considered are those of the current month.
     """
     tournaments_df = pd.DataFrame(tournaments, columns=[column for column in tournaments.keys()])
-    with open(f"tournaments_files/tournaments.pkl", "ab") as file:
-        pickle.dump(tournaments_df, file)
-    return tournaments_df
+    try:
+        with open(f"tournaments_files/tournaments.pkl", "rb") as old_file:
+            old_data = pickle.load(old_file)
+        full_data = pd.concat([old_data, tournaments_df])
+        cleaned_data = full_data.drop_duplicates(keep=False)
+        with open(f"tournaments_files/tournaments.pkl", "ab") as file:
+            pickle.dump(cleaned_data, file)
+        print("Duplicate data has been dropped.")
+        return cleaned_data
+    except:
+        print("Saving full data.")
+        with open(f"tournaments_files/tournaments.pkl", "wb") as file:
+            pickle.dump(tournaments_df, file)
+        return tournaments_df
 
 
 def to_database(tournaments: pd.DataFrame):
@@ -86,19 +97,22 @@ def to_database(tournaments: pd.DataFrame):
         database = os.environ.get("LOCAL_DATABASE")
     )
 
-    with connection.cursor() as cursor:
-        for index, row in tournaments.iterrows():
-            name = row["name"]
-            city = row["city"]
-            country = row["country"]
-            surface = row["surface"]
-            start_date = row["start_date"]
-            end_date = row["end_date"]
-            year = row["year"]
-            command = f"INSERT INTO tournaments (name, city, country, surface, start_date, end_date, year) VALUES (%s, %s, %s, %s, %s, %s, %s);"
-            cursor.execute(command, (name, city, country, surface, start_date, end_date, year))
-            connection.commit()
-    print("Data uploaded successfully")
+    if tournaments.shape[0] == 0:
+        print("Database up to date. No data to load.")
+    else:
+        with connection.cursor() as cursor:
+            for index, row in tournaments.iterrows():
+                name = row["name"]
+                city = row["city"]
+                country = row["country"]
+                surface = row["surface"]
+                start_date = row["start_date"]
+                end_date = row["end_date"]
+                year = row["year"]
+                command = f"INSERT INTO tournaments (name, city, country, surface, start_date, end_date, year) VALUES (%s, %s, %s, %s, %s, %s, %s);"
+                cursor.execute(command, (name, city, country, surface, start_date, end_date, year))
+                connection.commit()
+        print("Data uploaded successfully")
 
     return
 
@@ -120,3 +134,12 @@ def get_data_from_db():
         content = cursor.fetchall()
 
     return content
+
+
+# Getting tournaments list and loading database
+main_url = "https://www.wtatennis.com/tournaments"
+get_data_source(url=main_url)
+tournament_dict = get_tournaments_info_to_dict("tournaments_files/tournaments_list.html")
+# print(tournament_dict)
+tournament_df = to_dataframe(tournament_dict)
+to_database(tournament_df)

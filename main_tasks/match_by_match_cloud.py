@@ -148,19 +148,14 @@ def to_database(dataframe: pd.DataFrame):
     """
     Checks the dataframe for new data and, if so, loads it into database for further analysis.
     """
-    # connection = mysql.connector.connect(
-    #     user = os.environ.get("PYANY_USERNAME"), # nome usuário principal
-    #     password = os.environ.get("PYANY_PWD"),
-    #     host = os.environ.get("PYANY_HOST"), # endpoint
-    #     port = 3306,
-    #     database = os.environ.get("PYANY_DATABASE") # nome do db
-    # )
 
     connection = mysql.connector.connect(
-        user = 'root',
-        password = os.environ.get("LOCALPASSWORD"),
-        host = 'localhost',
-        database = os.environ.get("LOCAL_DATABASE")
+        url = `${{MYSQL_URL}}`,
+        user = "MYSQLUSER",
+        password = "MYSQLPASSWORD",
+        host = "MYSQLHOST",
+        database = "MYSQLDATABASE",
+        port = "MYSQLPORT"
     )
 
     if dataframe.shape[0] == 0:

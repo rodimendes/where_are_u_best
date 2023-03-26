@@ -3,12 +3,14 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 import datetime as dt
+from datetime import timedelta
 import os
 from dotenv import load_dotenv
 import requests
 import pandas as pd
 import pickle
 import mysql.connector
+from glob import glob
 
 
 load_dotenv()
@@ -72,13 +74,12 @@ def get_matches_info_to_dict(source_code):
     city = []
     country = []
     for match in range(len(players1)):
+        tournament_name.append(raw_tournament_name[0].find('h3').text.strip())
+        city_splitted = raw_tournament_name[0].find('p').text.split(',')
+        city.append(city_splitted[0].strip())
+        country.append(city_splitted[1].strip())
         for surface in raw_surface:
             surfaces.append(surface.text.strip())
-        for tournament in raw_tournament_name:
-            tournament_name.append(tournament.find('h3').text.strip())
-            city_splitted = tournament.find('p').text.split(',')
-            city.append(city_splitted[0].strip())
-            country.append(city_splitted[1].strip())
 
     if len(players1) != 0:
         city_name = city[0]
@@ -135,12 +136,40 @@ def to_dataframe(player_matches: dict):
     Saves the dictionary as dataframe.
     """
     matches_df = pd.DataFrame(player_matches, columns=[column for column in player_matches.keys()])
-    folder_name = "matches"
+    current_time = dt.datetime.today().time()
     try:
-        os.mkdir(folder_name)
-    finally:
-        with open(f"matches/{dt.date.today()}.pkl", "wb") as file:
-            pickle.dump(matches_df, file)
+        if str(current_time) < "12:00":
+            yesterday = dt.date.today() - timedelta(days=-1)
+            old_file = glob(f"matches/{yesterday}-B")
+            with open(old_file[0], "rb") as file:
+                old_data = pickle.load(file)
+            full_data = pd.concat([old_data, matches_df])
+            cleaned_data = full_data.drop_duplicates(keep=False)
+            print("Dropped duplicated data")
+            folder_name = "matches"
+            try:
+                os.mkdir(folder_name)
+            finally:
+                with open(f"matches/{dt.date.today()}-A.pkl", "wb") as file:
+                    pickle.dump(matches_df, file)
+            return cleaned_data
+        else:
+            old_file = glob(f"matches/{dt.date.today()}-A")
+            with open(old_file[0], "rb") as file:
+                old_data = pickle.load(file)
+            full_data = pd.concat([old_data, matches_df])
+            cleaned_data = full_data.drop_duplicates(keep=False)
+            print("Dropped duplicated data")
+            folder_name = "matches"
+            try:
+                os.mkdir(folder_name)
+            finally:
+                with open(f"matches/{dt.date.today()}-B.pkl", "wb") as file:
+                    pickle.dump(matches_df, file)
+            return cleaned_data
+    except:
+        with open(f"matches/{dt.date.today()}-A.pkl", "wb") as file:
+                pickle.dump(matches_df, file)
         return matches_df
 
 
@@ -190,8 +219,11 @@ def to_database(dataframe: pd.DataFrame):
 
 source_code_to_test = get_source_code("https://www.wtatennis.com/scores")
 
-# source_code_to_test = "matches_source_code/2023-03-16.html"
-
+# source_code_to_test = "matches_source_code/2023-03-25.html"
+# # print(source_code_to_test)
 matches_dict = get_matches_info_to_dict(source_code_to_test)
+# print(f"To check lenght of each key. They must be the same lenght - {matches_dict}")
+# print(matches_dict)
 matches_df = to_dataframe(matches_dict)
+# print(matches_df)
 to_database(matches_df)

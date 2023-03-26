@@ -1,3 +1,5 @@
+# TODO Check duplicated dates and cities
+
 import requests
 import pickle
 import os
@@ -14,16 +16,20 @@ def weather_data():
     """
     It checks the city hosting a current tournament, locates its latitude and longitude, and then collects the temperature and humidity for the next seven days. Returns a dictionary with the name of the city, forecast date, temperature and humidity.
     """
-    with open("tournaments/tournaments.pkl", 'rb') as file:
+    with open("tournaments_files/tournaments.pkl", 'rb') as file:
         lista = pickle.load(file)
 
     full_start_dt = lista.start_date + ' ' + lista.year
     full_end_dt = lista.end_date + ' ' + lista.year
     today = dt.datetime.today()
+    city = []
+    week_dates = []
+    week_temperature = []
+    week_humidity = []
     for pos, start in enumerate(full_start_dt):
         start_date = dt.datetime.strptime(start, '%b %d %Y')
         end_date = dt.datetime.strptime(full_end_dt[pos], '%b %d %Y')
-        if (start_date - today).days < 1:
+        if (start_date - today).days < 1 and (today < end_date):
             city_name = lista['city'][pos]
             print(f'{city_name} is coming soon...')
 
@@ -54,10 +60,11 @@ def weather_data():
             response.raise_for_status
             weather_data = response.json()
             next_seven_days = weather_data['daily'][:7]
-            week_temperature = [day['temp']['eve'] for day in next_seven_days]
-            week_humidity = [day['humidity'] for day in next_seven_days]
-            week_dates = [str(dt.date.fromtimestamp(day['dt'])) for day in next_seven_days]
-            city = [city_name for _ in week_dates]
+            for day in next_seven_days:
+                week_temperature.append(day['temp']['eve'])
+                week_humidity.append(day['humidity'])
+                week_dates.append(str(dt.date.fromtimestamp(day['dt'])))
+                city.append(city_name)
 
     weather_forecast = {
         'name': city,
@@ -100,6 +107,12 @@ def to_database(weather: pd.DataFrame):
             cursor.execute(command, (city, date, temperature, humidity))
             connection.commit()
     print("Weather data uploaded successfully")
+
+
+weather_dict = weather_data()
+# print(weather_dict)
+weather_df = to_dataframe(weather_dict)
+to_database(weather=weather_df)
 
 # Script to enter first values
 # Do not need to be executed again
