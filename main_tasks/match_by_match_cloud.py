@@ -150,12 +150,11 @@ def to_database(dataframe: pd.DataFrame):
     """
 
     connection = mysql.connector.connect(
-        url = `${{MYSQL_URL}}`,
-        user = "MYSQLUSER",
-        password = "MYSQLPASSWORD",
-        host = "MYSQLHOST",
-        database = "MYSQLDATABASE",
-        port = "MYSQLPORT"
+        user = os.environ.get("AWSUSER"), # nome usuário principal
+        password = os.environ.get("AWSPASSWORD"),
+        host = os.environ.get("AWSHOST"), # endpoint
+        port = 3306,
+        database = os.environ.get("DATABASE") # nome do db
     )
 
     if dataframe.shape[0] == 0:
@@ -183,10 +182,8 @@ def to_database(dataframe: pd.DataFrame):
         return
 
 
-source_code_to_test = get_source_code("https://www.wtatennis.com/scores")
-
+# source_code_to_test = get_source_code("https://www.wtatennis.com/scores")
 # source_code_to_test = "matches_source_code/2023-03-16.html"
-
-matches_dict = get_matches_info_to_dict(source_code_to_test)
-matches_df = to_dataframe(matches_dict)
-to_database(matches_df)
+# matches_dict = get_matches_info_to_dict(source_code_to_test)
+# matches_df = to_dataframe(matches_dict)
+# to_database(matches_df)

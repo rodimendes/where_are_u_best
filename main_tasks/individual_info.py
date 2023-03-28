@@ -14,7 +14,7 @@ def get_source_code(url):
     driver.get(url)
     with open(f"tournaments/tournaments_list.html", "w") as file:
         file.write(driver.page_source)
-    
+
 
 def get_player_name(source_code):
     """

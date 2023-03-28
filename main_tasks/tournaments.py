@@ -136,10 +136,10 @@ def get_data_from_db():
     return content
 
 
-# Getting tournaments list and loading database
-main_url = "https://www.wtatennis.com/tournaments"
-get_data_source(url=main_url)
-tournament_dict = get_tournaments_info_to_dict("tournaments_files/tournaments_list.html")
-# print(tournament_dict)
-tournament_df = to_dataframe(tournament_dict)
-to_database(tournament_df)
+# # Getting tournaments list and loading database
+# main_url = "https://www.wtatennis.com/tournaments"
+# get_data_source(url=main_url)
+# tournament_dict = get_tournaments_info_to_dict("tournaments_files/tournaments_list.html")
+# tournament_df = to_dataframe(tournament_dict)
+# to_database(tournament_df)
+# print(get_data_from_db())
