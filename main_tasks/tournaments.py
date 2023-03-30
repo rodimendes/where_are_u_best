@@ -18,14 +18,13 @@ def get_data_source(url):
     chrome_options.add_argument('--headless')
     driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get(url)
-    with open(f"tournaments_files/tournaments_list.html", "w") as file:
+    with open(f"../tournaments_files/tournaments_list.html", "w") as file:
         file.write(driver.page_source)
 
 
 def get_tournaments_info_to_dict(html_file):
     """
     Receives the source code as html file and gets 'name', 'city', 'country', 'surface', 'start_date', 'end_date' and 'year' from last tournaments, returning a dictionary.
-
     """
     with open(html_file, 'r') as raw_file:
         soup = BeautifulSoup(raw_file, 'html.parser')
@@ -63,17 +62,17 @@ def to_dataframe(tournaments: dict):
     """
     tournaments_df = pd.DataFrame(tournaments, columns=[column for column in tournaments.keys()])
     try:
-        with open(f"tournaments_files/tournaments.pkl", "rb") as old_file:
+        with open(f"../tournaments_files/tournaments.pkl", "rb") as old_file:
             old_data = pickle.load(old_file)
         full_data = pd.concat([old_data, tournaments_df])
         cleaned_data = full_data.drop_duplicates(keep=False)
-        with open(f"tournaments_files/tournaments.pkl", "ab") as file:
+        with open(f"../tournaments_files/tournaments.pkl", "ab") as file:
             pickle.dump(cleaned_data, file)
         print("Duplicate data has been dropped.")
         return cleaned_data
     except:
         print("Saving full data.")
-        with open(f"tournaments_files/tournaments.pkl", "wb") as file:
+        with open(f"../tournaments_files/tournaments.pkl", "wb") as file:
             pickle.dump(tournaments_df, file)
         return tournaments_df
 
@@ -136,10 +135,10 @@ def get_data_from_db():
     return content
 
 
-# # Getting tournaments list and loading database
-# main_url = "https://www.wtatennis.com/tournaments"
-# get_data_source(url=main_url)
-# tournament_dict = get_tournaments_info_to_dict("tournaments_files/tournaments_list.html")
-# tournament_df = to_dataframe(tournament_dict)
-# to_database(tournament_df)
-# print(get_data_from_db())
+# Getting tournaments list and loading database
+main_url = "https://www.wtatennis.com/tournaments"
+get_data_source(url=main_url)
+tournament_dict = get_tournaments_info_to_dict("../tournaments_files/tournaments_list.html")
+tournament_df = to_dataframe(tournament_dict)
+to_database(tournament_df)
+print(get_data_from_db())
