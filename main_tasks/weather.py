@@ -96,7 +96,7 @@ def to_dataframe(weather_dict: dict):
         cleaned_forecast = full_forecast.drop_duplicates(subset=['name', 'dates'], keep=False)
         return cleaned_forecast
     except:
-        with open("weather_files/climate_forecast.pkl", 'ab') as file:
+        with open("weather_files/climate_forecast.pkl", 'wb') as file:
             pickle.dump(weather_df, file)
         return weather_df
 
