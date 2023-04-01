@@ -1,4 +1,4 @@
-# TODO Continuar a filtrar informações
+# TODO Adicionar data da partida, temperatura e humidade.
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -62,6 +62,10 @@ def get_matches_info_to_dict(source_code):
     tournament_name_list = []
     city_list = []
     country_list = []
+    player1 = []
+    player2 = []
+    score = []
+    winner = []
     for tournament in raw_tournament_data:
         tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"})
         name = tournament["data-ui-title"]
@@ -69,33 +73,20 @@ def get_matches_info_to_dict(source_code):
         city_and_country = raw_city.split(",")
         city = city_and_country[0].strip().title()
         country = city_and_country[1].strip().title()
-        print(country)
-        print(city)
-        print(name)
         players = tournament_matches.find_all("a", class_="match-table__player match-table__player--link")
-        print(players)
-        # print(tournament_matches)
-    # for tournament in all_tournaments:
-    #     print(tournament.find_all(attrs={"data-status":"COMPLETE"}))
-        # "tournament" to catch info about matches from that tournament
-        # PLAYERS
-        # raw_players = tournament.find_all("a", class_="match-table__player match-table__player--link")
-        # for pos, player in enumerate(raw_players):
-        #     if pos % 2 == 0:
-        #         player1.append(player['aria-label'])
-        #     else:
-        #         player2.append(player['aria-label'])
-        # print(tournament)
-        # raw_score = tournament.find_all("a", class_="tennis-match__match-link")
-        # print(raw_score)
-        # scores = [score['title'] for score in raw_score]
-        # for score in scores:
-        #     scores_list.append(score.split(" ")[-1])
-        #     winner.append(score.split("d")[0].strip())
-    # print(player1)
-    # print(player2)
-    # print(scores_list)
-    # print(winner)
+        for pos, player in enumerate(players):
+            if pos % 2 == 0:
+                player1.append(player['aria-label'])
+                tournament_name_list.append(name)
+                city_list.append(city)
+                country_list.append(country)
+            else:
+                player2.append(player['aria-label'])
+        raw_score = tournament_matches.find_all("a", class_="tennis-match__match-link")
+        score_data = [score["title"] for score in raw_score]
+        for match in score_data:
+            winner  .append(match.split("d")[0].strip())
+            score.append(match.split(" ")[-1])
 
     # raw_tournament_name = soup.find_all("div", class_="sidebar-item__content")
     # print("RAW TOURNAMENT")
