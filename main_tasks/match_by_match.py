@@ -56,14 +56,47 @@ def get_matches_info_to_dict(source_code):
     with open(source_code, "r") as file_to_read:
         soup = BeautifulSoup(file_to_read, 'html.parser')
 
-    raw_data = soup.find_all("article")
-    for item in raw_data:
-        tournaments = item.find_all("div", class_="tournament-wrapper")
-        for tournament in tournaments:
-            raw_players = tournament.find_all("a", class_="match-table__player match-table__player--link")
-            for player in raw_players:
-                print(player['aria-label'])
-            print("")
+    raw_data = soup.find("article")
+    raw_tournament_data = raw_data.find_all("div", class_="tournament-wrapper") # Prints a list with all matches info per tournament
+    # print(len(raw_tournament_data)) # <-- == 2
+    tournament_name_list = []
+    city_list = []
+    country_list = []
+    for tournament in raw_tournament_data:
+        tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"})
+        name = tournament["data-ui-title"]
+        raw_city = tournament["data-ui-subtitle"]
+        city_and_country = raw_city.split(",")
+        city = city_and_country[0].strip().title()
+        country = city_and_country[1].strip().title()
+        print(country)
+        print(city)
+        print(name)
+        players = tournament_matches.find_all("a", class_="match-table__player match-table__player--link")
+        print(players)
+        # print(tournament_matches)
+    # for tournament in all_tournaments:
+    #     print(tournament.find_all(attrs={"data-status":"COMPLETE"}))
+        # "tournament" to catch info about matches from that tournament
+        # PLAYERS
+        # raw_players = tournament.find_all("a", class_="match-table__player match-table__player--link")
+        # for pos, player in enumerate(raw_players):
+        #     if pos % 2 == 0:
+        #         player1.append(player['aria-label'])
+        #     else:
+        #         player2.append(player['aria-label'])
+        # print(tournament)
+        # raw_score = tournament.find_all("a", class_="tennis-match__match-link")
+        # print(raw_score)
+        # scores = [score['title'] for score in raw_score]
+        # for score in scores:
+        #     scores_list.append(score.split(" ")[-1])
+        #     winner.append(score.split("d")[0].strip())
+    # print(player1)
+    # print(player2)
+    # print(scores_list)
+    # print(winner)
+
     # raw_tournament_name = soup.find_all("div", class_="sidebar-item__content")
     # print("RAW TOURNAMENT")
     # print(raw_tournament_name)
