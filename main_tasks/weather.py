@@ -27,9 +27,9 @@ def weather_data():
     for pos, start in enumerate(full_start_dt):
         start_date = dt.datetime.strptime(start, '%b %d %Y')
         end_date = dt.datetime.strptime(full_end_dt[pos], '%b %d %Y')
-        if (start_date - today).days < 1 and (today < end_date):
+        if (start_date - today).days >= 0 and (today < end_date):
             city_name = lista['city'][pos]
-            print(f'The {city_name} tournament is running.')
+            print(f'Getting data from {city_name} tournament.')
 
             coord_params = {
             "appid": api_key,
@@ -92,8 +92,11 @@ def to_dataframe(weather_dict: dict):
         last_weather_forecast = "weather_files/climate_forecast.pkl"
         with open(last_weather_forecast, "rb") as file:
             last_forecast = pickle.load(file)
-        full_forecast = pd.concat([last_forecast, weather_df])
-        cleaned_forecast = full_forecast.drop_duplicates(subset=['name', 'dates'], keep=False)
+        full_forecast = pd.concat([last_forecast, weather_df], ignore_index=True)
+        uptodate_forecast = full_forecast.drop_duplicates(subset=['name', 'dates'], keep="first", ignore_index=True)
+        cleaned_forecast = full_forecast.drop_duplicates(subset=['name', 'dates'], keep=False, ignore_index=True)
+        with open("weather_files/climate_forecast.pkl", "wb") as file:
+            pickle.dump(uptodate_forecast, file)
         return cleaned_forecast
     except:
         with open("weather_files/climate_forecast.pkl", 'wb') as file:
@@ -114,7 +117,6 @@ def to_database(weather: pd.DataFrame):
 
     if weather.shape[0] == 0:
         print("Database up to date. No data to load.")
-        return
     else:
         with connection.cursor() as cursor:
             for index, row in weather.iterrows():
@@ -126,7 +128,7 @@ def to_database(weather: pd.DataFrame):
                 cursor.execute(command, (city, date, temperature, humidity))
                 connection.commit()
         print("Weather data uploaded successfully")
-        return
+    return
 
 weather_dict = weather_data()
 weather_df = to_dataframe(weather_dict)

@@ -53,6 +53,7 @@ def get_tournaments_info_to_dict(html_file):
         'year': year
     }
 
+    # print(tournaments_dict)
     return tournaments_dict
 
 
@@ -65,16 +66,17 @@ def to_dataframe(tournaments: dict):
     try:
         with open(f"tournaments_files/tournaments.pkl", "rb") as old_file:
             old_data = pickle.load(old_file)
-        full_data = pd.concat([old_data, tournaments_df])
-        cleaned_data = full_data.drop_duplicates(keep=False)
-        with open(f"tournaments_files/tournaments.pkl", "ab") as file:
-            pickle.dump(cleaned_data, file)
+        full_data = pd.concat([old_data, tournaments_df], ignore_index=True)
+        uptodate_tournaments = full_data.drop_duplicates(subset=["name", "year"], keep="first", ignore_index=True)
+        cleaned_data = full_data.drop_duplicates(subset=["name", "year"], keep=False, ignore_index=True)
+        with open("tournaments_files/tournaments.pkl", "wb") as file:
+            pickle.dump(uptodate_tournaments, file)
         print("Duplicate data has been dropped.")
         return cleaned_data
 
     except:
         print("Saving full data.")
-        with open(f"tournaments_files/tournaments.pkl", "wb") as file:
+        with open("tournaments_files/tournaments.pkl", "wb") as file:
             pickle.dump(tournaments_df, file)
         return tournaments_df
 
@@ -114,7 +116,6 @@ def to_database(tournaments: pd.DataFrame):
                 cursor.execute(command, (name, city, country, surface, start_date, end_date, year))
                 connection.commit()
         print("Data uploaded successfully")
-
     return
 
 

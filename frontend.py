@@ -1,6 +1,4 @@
 import streamlit as st
-import tournaments
-from main_tasks import matches
 import pandas as pd
 import os
 from dotenv import load_dotenv
