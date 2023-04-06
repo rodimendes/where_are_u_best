@@ -16,7 +16,7 @@ On this first approach we've collected the following information:
 - score,
 - date,
 - temperature, and
-- humidity
+- humidity.
 
 ## Files and main functions
 The scripts are inside the `main_tasks` folder and collect different data.
