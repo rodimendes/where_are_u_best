@@ -207,14 +207,6 @@ def to_database(dataframe: pd.DataFrame):
 
 
 source_code_to_test = get_source_code("https://www.wtatennis.com/scores")
-
-# source_code_to_test = "matches_source_code/2023-04-03.html" # <--- To test
-
 matches_dict = get_matches_info_to_dict(source_code_to_test)
 matches_df = to_dataframe(matches_dict)
 to_database(matches_df)
-
-# with open("matches/daily.pkl", "rb") as file:
-#     old_data = pickle.load(file)
-# to_database(old_data)
-# print(old_data)
