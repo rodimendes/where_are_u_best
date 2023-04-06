@@ -147,21 +147,16 @@ def to_dataframe(player_matches: dict):
             except:
                 with open("matches/daily.pkl", "rb") as file:
                     old_data = pickle.load(file)
-                # print("OLD_DATA")
-                # print(old_data)
-                full_data = pd.concat([old_data, matches_df], ignore_index=True)
-                # print("FULL_DATA")
-                # print(full_data)
-                uptodate_data = full_data.drop_duplicates(subset=['player1', 'player2', 'city', 'date'], keep="first", ignore_index=True)
-                # print("UPTODATE")
-                # print(uptodate_data)
-                cleaned_data = full_data.drop_duplicates(subset=['player1', 'player2', 'city', 'date'], keep=False, ignore_index=True)
-                # print("CLEANED DATA")
-                # print(cleaned_data)
+                reunited_data = pd.concat([old_data, matches_df], ignore_index=True)
+                full_data = pd.concat([reunited_data, old_data], ignore_index=True)
+                print("Dropping duplicated data")
+                new_data = full_data.drop_duplicates(subset=['player1', 'player2', 'city'], keep=False, ignore_index=True)
+                if new_data.shape[0] == 0:
+                    print("Nothing to save")
+                keep_data = full_data.drop_duplicates(subset=['player1', 'player2', 'city'], keep="first", ignore_index=True)
                 with open(f"matches/daily.pkl", "wb") as file:
-                    pickle.dump(uptodate_data, file)
-            print("Dropped duplicated data")
-            return cleaned_data
+                    pickle.dump(keep_data, file)
+            return new_data
 
         except:
             with open(f"matches/daily.pkl", "wb") as file:
@@ -219,8 +214,7 @@ matches_dict = get_matches_info_to_dict(source_code_to_test)
 matches_df = to_dataframe(matches_dict)
 to_database(matches_df)
 
-
 # with open("matches/daily.pkl", "rb") as file:
 #     old_data = pickle.load(file)
-# print("Checking saved data")
+# to_database(old_data)
 # print(old_data)
