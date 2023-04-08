@@ -16,7 +16,7 @@ st.set_page_config(
 
 def all_matches(matches_data):
     st.dataframe(matches_data[:5], height=212)
-    choice = st.radio("Filter data by:", options=["Players", "Country", "Tournament", "Winner"], horizontal=True)
+    choice = st.radio("Filter data by:", options=["Players", "Tournament", "Country", "Winner"], horizontal=True)
     if choice == "Players":
         players1 = matches_data["Player 1"].unique()
         players2 = matches_data["Player 2"].unique()
@@ -45,18 +45,22 @@ def all_matches(matches_data):
 
         col1, col2, col3, col4, col5 = st.columns(5)
         col1.metric(label="Recorded matches", value=player_df.shape[0])
-        col2.metric(label="Wins", value=wins)
-        col3.metric(label="Defeats", value=defeat)
-        col4.metric(label="Mean temperature", value=mean_temp, delta=f"{std_dev_temp.max():.2f}")
-        col5.metric(label="Humidity", value=f"{mean_humidity:.2f}", delta=f"{std_dev_hum.max():.2f}")
-    elif choice == "Country":
-        countries = matches_data["Country"].unique()
-        country_select = st.selectbox("Pick a country:", countries)
-        st.dataframe(matches_data[matches_data["Country"] == country_select])
+        col2.metric(label="Wins", value=wins, delta=f"{(wins/player_df.shape[0])*100:.1f}%")
+        col3.metric(label="Defeats", value=defeat, delta=f"{(defeat/player_df.shape[0])*100:.1f}%")
+        col4.metric(label="Mean temperature", value=f"{mean_temp:.2f}", delta=f"{std_dev_temp.max():.2f}", help="The green value represents the standard deviation for collected values so far.")
+        col5.metric(label="Mean humidity", value=f"{mean_humidity:.2f}", delta=f"{std_dev_hum.max():.2f}", help="The green value represents the standard deviation for collected values so far.")
+        st.write("---")
+        desired_temp = st.slider(label='Temperature', min_value=5, max_value=50, value=(10, 20))
+        my_choice_temp = (player_df[(player_df['Temperature'] >= desired_temp[0]) & (player_df['Temperature'] <= desired_temp[1])])
+        st.write(my_choice_temp)
     elif choice == "Tournament":
         tournaments = matches_data["Tournament"].unique()
         tournament_select = st.selectbox("Pick a tournament:", tournaments)
         st.dataframe(matches_data[matches_data["Tournament"] == tournament_select])
+    elif choice == "Country":
+        countries = matches_data["Country"].unique()
+        country_select = st.selectbox("Pick a country:", countries)
+        st.dataframe(matches_data[matches_data["Country"] == country_select])
     elif choice == "Winner":
         winners = matches_data["Winner"].unique()
         winner_select = st.selectbox("Pick a winner:", winners)
