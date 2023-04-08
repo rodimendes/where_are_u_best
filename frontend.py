@@ -1,4 +1,3 @@
-# TODO Filtrar por jogadora. Já iniciei a ideia
 # TODO Filtrar por jogadora e resultado.
 # TODO Quando filtrar, aparecer sumário: n° vitórias, n° derrotas, percentual das vitórias e derrotas, percentual de vitórias por temperatura e humidade.
 
@@ -24,7 +23,32 @@ def all_matches(matches_data):
         full_players_list = sorted(list(set(players1) | set(players2)))
         player_select = st.selectbox("Pick a player:", full_players_list)
         st.write(f"You choose **{player_select}**")
-        st.dataframe(matches_data[(matches_data['Player 1'] == player_select) | (matches_data['Player 2'] == player_select)])
+        player_df = matches_data[(matches_data['Player 1'] == player_select) | (matches_data['Player 2'] == player_select)]
+        st.dataframe(player_df)
+
+        # Wins and defeats
+        wins = 0
+        defeat = 0
+        for winner in player_df["Winner"]:
+            if player_select[-4:] in winner:
+                wins += 1
+            else:
+                defeat += 1
+
+        # Temperature
+        mean_temp = (player_df["Temperature"]).mean()
+        std_dev_temp = pd.DataFrame(player_df["Temperature"]).std()
+
+        #Humidity
+        mean_humidity = (player_df["Humidity"]).mean()
+        std_dev_hum = pd.DataFrame(player_df["Humidity"]).std()
+
+        col1, col2, col3, col4, col5 = st.columns(5)
+        col1.metric(label="Recorded matches", value=player_df.shape[0])
+        col2.metric(label="Wins", value=wins)
+        col3.metric(label="Defeats", value=defeat)
+        col4.metric(label="Mean temperature", value=mean_temp, delta=f"{std_dev_temp.max():.2f}")
+        col5.metric(label="Humidity", value=f"{mean_humidity:.2f}", delta=f"{std_dev_hum.max():.2f}")
     elif choice == "Country":
         countries = matches_data["Country"].unique()
         country_select = st.selectbox("Pick a country:", countries)
@@ -37,8 +61,9 @@ def all_matches(matches_data):
         winners = matches_data["Winner"].unique()
         winner_select = st.selectbox("Pick a winner:", winners)
         st.dataframe(matches_data[matches_data["Winner"] == winner_select])
+
 def all_tournaments(tournament_data):
-    st.dataframe(tournament_data[:5], height=248)
+    st.dataframe(tournament_data[:5], height=212)
 
 
 ### Page Start ###
