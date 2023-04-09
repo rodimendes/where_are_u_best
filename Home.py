@@ -1,5 +1,3 @@
-# TODO Graficos com vitorias e derrotas relacionadas com temperatura e humidade, em imagens separadas
-
 import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
@@ -22,6 +20,9 @@ def all_matches(matches_data, data_type):
         st.dataframe(matches_data, height=320)
 
     if choice == "Players":
+        # TODO Iinsert graph that represents the results and applyied filters
+        # TODO Graficos com vitorias e derrotas relacionadas com temperatura e humidade, em imagens separadas
+
         players1 = matches_data["Player 1"].unique()
         players2 = matches_data["Player 2"].unique()
         full_players_list = sorted(list(set(players1) | set(players2)))
@@ -63,16 +64,22 @@ def all_matches(matches_data, data_type):
             st.dataframe(my_choice_hum)
 
     elif choice == "Tournament":
+        # TODO Insert map with tournaments around the world as a point
+
         tournaments = matches_data["Tournament"].unique()
         tournament_select = st.sidebar.selectbox("Pick a tournament:", tournaments)
         st.dataframe(matches_data[matches_data["Tournament"] == tournament_select], height=320)
 
     elif choice == "Country":
+        # TODO Insert map with countries
+
         countries = matches_data["Country"].unique()
         country_select = st.sidebar.selectbox("Pick a country:", countries)
         st.dataframe(matches_data[matches_data["Country"] == country_select], height=320)
 
     elif choice == "Winner":
+        # TODO Applies temperature and humidity filter to try the best players given the weather condition
+        
         winners = matches_data["Winner"].unique()
         winner_select = st.sidebar.selectbox("Pick a winner:", winners)
         st.dataframe(matches_data[matches_data["Winner"] == winner_select])
