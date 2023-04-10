@@ -20,7 +20,7 @@ def all_matches(matches_data, data_type):
         st.dataframe(matches_data, height=320)
 
     if choice == "Players":
-        # TODO Iinsert graph that represents the results and applyied filters
+        # TODO Insert graph that represents the results and applied filters
         # TODO Graficos com vitorias e derrotas relacionadas com temperatura e humidade, em imagens separadas
 
         players1 = matches_data["Player 1"].unique()
@@ -79,10 +79,26 @@ def all_matches(matches_data, data_type):
 
     elif choice == "Winner":
         # TODO Applies temperature and humidity filter to try the best players given the weather condition
-        
+        # TODO H2H para previsão de resultados de confrontos
+
         winners = matches_data["Winner"].unique()
         winner_select = st.sidebar.selectbox("Pick a winner:", winners)
-        st.dataframe(matches_data[matches_data["Winner"] == winner_select])
+        wins = matches_data[matches_data["Winner"] == winner_select]
+        st.dataframe(wins)
+        all_wins_rounded_temp = matches_data.round()
+        wins_rounded_temp = wins.round()
+        fig = px.histogram(wins_rounded_temp, x="Temperature", nbins=15, title="Wins and temperature", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=700, height=400)
+        fig.update_layout(yaxis_title="Wins")
+        st.plotly_chart(fig)
+
+        # fig2 = go.Figure()
+        # fig2.add_trace(go.Histogram(x=all_wins_rounded_temp["Temperature"], nbinsx=15))
+        # fig2.add_trace(go.Histogram(x=wins_rounded_temp["Temperature"], nbinsx=15))
+
+        # fig2.update_traces(opacity=0.75)
+        # fig2.update_layout(yaxis_title="Wins", xaxis_title="Temperature", barmode="overlay")
+        # st.plotly_chart(fig2)
+
 
 def all_tournaments(tournament_data):
     st.dataframe(tournament_data, height=320)
