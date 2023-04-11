@@ -116,7 +116,6 @@ def get_matches_info_to_dict(source_code):
             weather_data = response.json()
             temperature.append(weather_data['current']['feels_like'])
             humidity.append(weather_data['current']['humidity'])
-
     else:
         print("No one match completed so far.")
 

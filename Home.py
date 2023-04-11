@@ -13,6 +13,8 @@ st.set_page_config(
 
 
 def all_matches(matches_data, data_type):
+    # TODO Remove Tournament and Country
+
     choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Tournament", "Country"], horizontal=True)
     players1 = matches_data["Player 1"].unique()
     players2 = matches_data["Player 2"].unique()
@@ -29,9 +31,6 @@ def all_matches(matches_data, data_type):
         st.dataframe(matches_data, height=320)
 
     if choice == "Players":
-        # TODO Insert graph that represents the results and applied filters
-        # TODO Graficos com vitorias e derrotas relacionadas com temperatura e humidade, em imagens separadas
-
         player_select = st.sidebar.selectbox("Pick a player:", full_players_list)
         st.write(f"You choose **{player_select}**")
         player_df = matches_data[(matches_data['Player 1'] == player_select) | (matches_data['Player 2'] == player_select)]
@@ -70,16 +69,18 @@ def all_matches(matches_data, data_type):
             st.dataframe(my_choice_hum)
 
     elif choice == "Winners":
-        # TODO Applies temperature and humidity filter to try the best players given the weather condition
-        # TODO H2H para previsão de resultados de confrontos
+        # TODO Fix legend for second graph
+        # TODO H2H para previsão de resultados de confrontos em outra radio
 
         winners = matches_data["Winner"].unique()
         winner_select = st.sidebar.selectbox("Pick a winner:", winners)
         wins = matches_data[matches_data["Winner"] == winner_select]
         st.dataframe(wins, height=110)
-        all_wins_rounded_temp = matches_data.round()
-        wins_rounded_temp = wins.round()
-        fig = px.histogram(wins_rounded_temp, x="Temperature", title="Wins and temperature", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=700, height=400)
+
+        all_wins_rounded = matches_data.round()
+        wins_rounded = wins.round()
+
+        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Individual", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=700, height=400)
         fig.update_layout(yaxis_title="Wins")
         fig.update_traces(xbins=dict(
             start=5,
@@ -88,13 +89,60 @@ def all_matches(matches_data, data_type):
             ))
         st.plotly_chart(fig)
 
-        # fig2 = go.Figure()
-        # fig2.add_trace(go.Histogram(x=all_wins_rounded_temp["Temperature"], nbinsx=15))
-        # fig2.add_trace(go.Histogram(x=wins_rounded_temp["Temperature"], nbinsx=15))
+        fig2 = go.Figure()
+        fig2.add_trace(go.Histogram(x=all_wins_rounded["Temperature"], nbinsx=15))
+        fig2.add_trace(go.Histogram(x=wins_rounded["Temperature"], nbinsx=15))
 
-        # fig2.update_traces(opacity=0.75)
-        # fig2.update_layout(yaxis_title="Wins", xaxis_title="Temperature", barmode="overlay")
-        # st.plotly_chart(fig2)
+        fig2.update_traces(
+            opacity=0.75,
+            xbins=dict(
+                start=5,
+                end=40,
+                size=2),
+            )
+        fig2.update_layout(title_text="Wins and Temperature - Total vs. Individual player",
+                           yaxis_title="Wins",
+                           xaxis_title="Temperature",
+                           barmode="overlay",
+                           width=700,
+                           height=400,
+                           legend_title="Legend",
+                           )
+        fig2.update_xaxes(range=[5, 40])
+        fig2.update_yaxes(range=[0, 30])
+        st.plotly_chart(fig2)
+
+        fig3 = px.histogram(wins_rounded, x="Humidity", title="Wins and Humidity - Individual", text_auto=True, range_x=(0, 100), range_y=(0, 30), width=700, height=400)
+        fig3.update_layout(yaxis_title="Wins")
+        fig3.update_traces(xbins=dict(
+            start=0,
+            end=100,
+            size=2
+            ))
+        st.plotly_chart(fig3)
+
+        fig4 = go.Figure()
+        fig4.add_trace(go.Histogram(x=all_wins_rounded["Humidity"], nbinsx=15))
+        fig4.add_trace(go.Histogram(x=wins_rounded["Humidity"], nbinsx=15))
+
+        fig4.update_traces(
+            opacity=0.75,
+            xbins=dict(
+                start=0,
+                end=100,
+                size=2),
+            )
+        fig4.update_layout(title_text="Wins and Humidity - Total vs. Individual player",
+                           yaxis_title="Wins",
+                           xaxis_title="Humidity",
+                           barmode="overlay",
+                           width=700,
+                           height=400,
+                           legend_title="Legend"
+                           )
+        fig4.update_xaxes(range=[0, 100])
+        fig4.update_yaxes(range=[0, 30])
+        st.plotly_chart(fig4)
 
     elif choice == "Tournament":
         # TODO Insert map with tournaments around the world as a point
@@ -103,6 +151,8 @@ def all_matches(matches_data, data_type):
         tournament_select = st.sidebar.selectbox("Pick a tournament:", tournaments)
         st.dataframe(matches_data[matches_data["Tournament"] == tournament_select], height=320)
 
+        tournaments_coord = pd.read_pickle("tournaments_files/tournaments_coord.pkl")
+        st.map(tournaments_coord)
     elif choice == "Country":
         # TODO Insert map with countries
 
@@ -112,8 +162,12 @@ def all_matches(matches_data, data_type):
 
 
 def all_tournaments(tournament_data):
+    # TODO Improve map with city name, tournament name...
+    
     st.dataframe(tournament_data, height=320)
 
+    tournaments_coord = pd.read_pickle("tournaments_files/tournaments_coord.pkl")
+    st.map(tournaments_coord)
 
 ### Page Start ###
 st.title("🎾 Where are U best")
