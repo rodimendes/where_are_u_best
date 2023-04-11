@@ -79,7 +79,11 @@ def get_matches_info_to_dict(source_code):
         raw_score = tournament_matches.find_all("a", class_="tennis-match__match-link")
         score_data = [score["title"] for score in raw_score]
         for match in score_data:
-            winner.append(match.split("d")[0].strip())
+            raw_winner = match.split(" d ")[0].strip()
+            if "]" in raw_winner:
+                winner.append(raw_winner.split("]")[1].strip())
+            else:
+                winner.append(raw_winner.strip())
             score.append(match.split(" ")[-1])
 
     if len(player1) != 0:
