@@ -2,6 +2,15 @@ import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+import smtplib
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DEPARTURE_MAIL = os.environ["DEPARTURE_MAIL"]
+PASS_DEPART_MAIL = os.environ["PASS_DEPART_MAIL"]
+ARRIVAL_MAIL = os.environ["ARRIVAL_MAIL"]
 
 
 st.set_page_config(
@@ -9,7 +18,6 @@ st.set_page_config(
     page_icon="🎾",
     layout="centered",
 )
-
 
 def all_matches(matches_data, data_type):
     choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Country"], horizontal=True)
@@ -185,3 +193,29 @@ if add_sidebar == "Matches":
 
 if add_sidebar == "Tournaments":
     all_tournaments(tournament_data=tournaments)
+
+st.sidebar.write("---")
+st.sidebar.markdown("#### Contacts")
+st.sidebar.markdown('''
+    <a href="https://www.linkedin.com/in/rodrigo-mendes-pinto/">
+        <img src="/pages/linkedin.png" />
+    </a>''',
+    unsafe_allow_html=True
+)
+# TODO Fix local image and link
+
+# st.sidebar.markdown("[![Foo](https://logospng.org/download/linkedin/logo-linkedin-256.png)](https://www.linkedin.com/in/rodrigo-mendes-pinto/)")
+with st.sidebar.form(key="form", clear_on_submit=True):
+    # TODO Include environmental variables in Streamlit Cloud Service
+
+    text = st.text_area("Feel free to give me some impressions or suggestions")
+    name = st.text_input(label="Name")
+    email = st.text_input(label="E-mail for response")
+    submit = st.form_submit_button()
+    if submit:
+        st.success("Message sent successfully")
+        email_message = f"Subject:Where are U best calling... 📬\n\nMessage: {text}\nEmail: {email}"
+        with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+            connection.starttls()
+            connection.login(DEPARTURE_MAIL, PASS_DEPART_MAIL)
+            connection.sendmail(from_addr=DEPARTURE_MAIL, to_addrs=ARRIVAL_MAIL, msg=email_message.encode('utf-8'))

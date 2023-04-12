@@ -30,3 +30,6 @@ with col02:
             - humidity.""")
 
 st.markdown("# 🏗 Under construction 🦺")
+st.markdown("""### New features to implement:""")
+st.markdown("- H2H, with graph based on temperature and humidity;")
+st.markdown("- Prediction of results based on temperature and humidity;")
