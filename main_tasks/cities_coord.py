@@ -11,7 +11,7 @@ api_key = os.environ.get("OPENWEATHER_KEY")
 with open("tournaments_files/tournaments.pkl", "rb") as file:
     old_data = pickle.load(file)
 
-tournaments_coord = old_data.drop(["surface", "start_date", "end_date", "year"], axis=1)
+tournaments_coord = old_data.drop(["start_date", "end_date", "year"], axis=1)
 tournaments_coord["lat"] = 0
 tournaments_coord["lon"] = 0
 

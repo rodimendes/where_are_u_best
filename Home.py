@@ -1,7 +1,6 @@
 import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
-from datetime import datetime
 import pandas as pd
 
 
@@ -13,9 +12,7 @@ st.set_page_config(
 
 
 def all_matches(matches_data, data_type):
-    # TODO Remove Tournament and Country
-
-    choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Tournament", "Country"], horizontal=True)
+    choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Country"], horizontal=True)
     players1 = matches_data["Player 1"].unique()
     players2 = matches_data["Player 2"].unique()
     full_players_list = sorted(list(set(players1) | set(players2)))
@@ -70,7 +67,7 @@ def all_matches(matches_data, data_type):
 
     elif choice == "Winners":
         # TODO Fix legend for second graph
-        # TODO H2H para previsão de resultados de confrontos em outra radio
+        # TODO H2H para previsão de resultados de confrontos em outra "radio"
 
         winners = matches_data["Winner"].unique()
         winner_select = st.sidebar.selectbox("Pick a winner:", winners)
@@ -144,36 +141,34 @@ def all_matches(matches_data, data_type):
         fig4.update_yaxes(range=[0, 30])
         st.plotly_chart(fig4)
 
-    elif choice == "Tournament":
-        # TODO Insert map with tournaments around the world as a point
-
-        tournaments = matches_data["Tournament"].unique()
-        tournament_select = st.sidebar.selectbox("Pick a tournament:", tournaments)
-        st.dataframe(matches_data[matches_data["Tournament"] == tournament_select], height=320)
-
-        tournaments_coord = pd.read_pickle("tournaments_files/tournaments_coord.pkl")
-        st.map(tournaments_coord)
     elif choice == "Country":
-        # TODO Insert map with countries
-
         countries = matches_data["Country"].unique()
         country_select = st.sidebar.selectbox("Pick a country:", countries)
         st.dataframe(matches_data[matches_data["Country"] == country_select], height=320)
 
 
 def all_tournaments(tournament_data):
-    # TODO Improve map with city name, tournament name...
-    
+    """
+    Shows all recorded tournaments and its data.
+    """
+    # Showing recorded tournaments
     st.dataframe(tournament_data, height=320)
 
+    # World map with tournaments
+    st.markdown("##### Hover over points for more information.")
     tournaments_coord = pd.read_pickle("tournaments_files/tournaments_coord.pkl")
-    st.map(tournaments_coord)
+    fig = px.scatter_mapbox(data_frame=tournaments_coord, lat="lat", lon="lon", zoom=0.5, hover_name="name", hover_data=["city", "country", "surface"], labels={"city": "City", "surface": "Surface", "country": "Country", "lat": "Latitude", "lon": "Longitude"})
+    fig.update_layout(mapbox_style="carto-positron")
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    st.plotly_chart(fig)
+
+
 
 ### Page Start ###
 st.title("🎾 Where are U best")
 
 ### Adding sidebar ###
-add_sidebar = st.sidebar.radio("Select one of the options below:", ("Matches", "Tournaments"))
+add_sidebar = st.sidebar.radio("Select one of the options below:", ("Matches", "Tournaments"), horizontal=True)
 
 ### Loading and configuring data from pickle files ###
 matches = pd.read_pickle("matches/daily.pkl")
