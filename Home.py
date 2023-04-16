@@ -76,9 +76,6 @@ def all_matches(matches_data, data_type):
             st.dataframe(my_choice_hum)
 
     elif choice == "Winners":
-        # TODO Fix legend for second graph
-        # TODO H2H para previsão de resultados de confrontos em outra "radio"
-
         winners = matches_data["Winner"].unique()
         winner_select = st.sidebar.selectbox("Pick a winner:", winners)
         wins = matches_data[matches_data["Winner"] == winner_select]
@@ -98,7 +95,7 @@ def all_matches(matches_data, data_type):
         st.plotly_chart(fig)
 
         fig2 = go.Figure()
-        fig2.add_traces([go.Histogram(x=all_wins_rounded["Temperature"], nbinsx=15), go.Histogram(x=wins_rounded["Temperature"], nbinsx=15)])
+        fig2.add_traces([go.Histogram(x=all_wins_rounded["Temperature"], nbinsx=15, name="All players", marker_color="red"), go.Histogram(x=wins_rounded["Temperature"], nbinsx=15, name=winner_select, marker_color="blue")])
 
         fig2.update_traces(
             opacity=0.75,
@@ -129,8 +126,8 @@ def all_matches(matches_data, data_type):
         st.plotly_chart(fig3)
 
         fig4 = go.Figure()
-        fig4.add_trace(go.Histogram(x=all_wins_rounded["Humidity"], nbinsx=15))
-        fig4.add_trace(go.Histogram(x=wins_rounded["Humidity"], nbinsx=15))
+        fig4.add_trace(go.Histogram(x=all_wins_rounded["Humidity"], nbinsx=15, name="All players", marker_color="red"))
+        fig4.add_trace(go.Histogram(x=wins_rounded["Humidity"], nbinsx=15, name=winner_select, marker_color="blue"))
 
         fig4.update_traces(
             opacity=0.75,
@@ -157,6 +154,8 @@ def all_matches(matches_data, data_type):
         st.dataframe(matches_data[matches_data["Country"] == country_select], height=320)
 
     elif choice == "H2H":
+        # TODO 
+
         winners = matches_data["Winner"].unique()
         col1, col2 = st.columns(2)
         player1 = col1.selectbox("Player 1", winners)
@@ -170,16 +169,16 @@ def all_matches(matches_data, data_type):
         ### Humidity
         fig_hum = go.Figure()
         fig_hum.add_trace(go.Histogram(x=player1_wins["Humidity"], name=player1, nbinsx=15, marker_color="red"))
-        fig_hum.add_trace(go.Histogram(x=player2_wins["Humidity"], name=player2, nbinsx=15, marker_color="green"))
+        fig_hum.add_trace(go.Histogram(x=player2_wins["Humidity"], name=player2, nbinsx=15, marker_color="blue"))
 
         fig_hum.update_traces(
-            opacity=0.7,
+            opacity=0.75,
             xbins=dict(
                 start=0,
                 end=100,
-                size=2),
+                size=BIN_SIZE_HUM),
             )
-        fig_hum.update_layout(title_text="Wins and Humidity - Total vs. Individual player",
+        fig_hum.update_layout(title_text=f"Humidity - Head to Head {player1} vs {player2}",
                            yaxis_title="Wins",
                            xaxis_title="Humidity",
                            barmode="overlay",
@@ -193,28 +192,27 @@ def all_matches(matches_data, data_type):
 
         ### Temperature
         fig_temp = go.Figure()
-        fig_temp.add_trace(go.Histogram(x=player1_wins["Temperature"], name=player1, nbinsx=15, marker_color="red"))
-        fig_temp.add_trace(go.Histogram(x=player2_wins["Temperature"], name=player2, nbinsx=15, marker_color="green"))
+        fig_temp.add_traces(go.Histogram(x=player1_wins["Temperature"], name=player1, nbinsx=15, marker_color="red"))
+        fig_temp.add_trace(go.Histogram(x=player2_wins["Temperature"], name=player2, nbinsx=15, marker_color="blue"))
 
         fig_temp.update_traces(
-            opacity=0.7,
+            opacity=0.75,
             xbins=dict(
                 start=5,
                 end=40,
-                size=1),
+                size=BIN_SIZE_TEMP),
             )
-        fig_hum.update_layout(title_text="Wins and Humidity - Total vs. Individual player",
+        fig_temp.update_layout(title_text=f"Temperature - Head to Head {player1} vs {player2}",
                            yaxis_title="Wins",
-                           xaxis_title="Humidity",
+                           xaxis_title="Temperature",
                            barmode="overlay",
                            width=700,
                            height=400,
                            legend_title="Legend"
                            )
-        fig_hum.update_xaxes(range=[0, 100])
-        fig_hum.update_yaxes(range=[0, 30])
-        st.plotly_chart(fig_hum)
-
+        fig_temp.update_xaxes(range=[5, 40])
+        fig_temp.update_yaxes(range=[0, 30])
+        st.plotly_chart(fig_temp)
 
 
 def all_tournaments(tournament_data):
