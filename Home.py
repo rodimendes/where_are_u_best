@@ -1,3 +1,6 @@
+# TODO Include help to explain fields on project
+# TODO Bin size and nbinsx
+
 import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
@@ -5,15 +8,19 @@ import pandas as pd
 import smtplib
 import os
 from dotenv import load_dotenv
+import matplotlib.pyplot as plt
 
 load_dotenv()
 
 DEPARTURE_MAIL = os.environ["DEPARTURE_MAIL"]
 PASS_DEPART_MAIL = os.environ["PASS_DEPART_MAIL"]
 ARRIVAL_MAIL = os.environ["ARRIVAL_MAIL"]
+
 DATAFRAME_HEIGHT_LARGE = 320
 DATAFRAME_HEIGHT_SMALL = 100
 PX_HEIGHT = 400
+BIN_SIZE_TEMP = 1
+BIN_SIZE_HUM = 2
 
 st.set_page_config(
     page_title="Where are U best",
@@ -22,7 +29,7 @@ st.set_page_config(
 )
 
 def all_matches(matches_data, data_type):
-    choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Country"], horizontal=True)
+    choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Country", "H2H"], horizontal=True)
     players1 = matches_data["Player 1"].unique()
     players2 = matches_data["Player 2"].unique()
     full_players_list = sorted(list(set(players1) | set(players2)))
@@ -76,9 +83,6 @@ def all_matches(matches_data, data_type):
             st.dataframe(my_choice_hum)
 
     elif choice == "Winners":
-        # TODO Fix legend for second graph
-        # TODO H2H para previsão de resultados de confrontos em outra "radio"
-
         winners = matches_data["Winner"].unique()
         winner_select = st.sidebar.selectbox("Pick a winner:", winners)
         wins = matches_data[matches_data["Winner"] == winner_select]
@@ -89,23 +93,23 @@ def all_matches(matches_data, data_type):
 
         fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Individual", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=700, height=PX_HEIGHT)
         fig.update_layout(yaxis_title="Wins")
-        fig.update_traces(xbins=dict(
-            start=5,
-            end=40,
-            size=2
-            ))
+        fig.update_traces(
+            xbins=dict(
+                start=5,
+                end=40,
+                size=BIN_SIZE_TEMP)
+            )
         st.plotly_chart(fig)
 
         fig2 = go.Figure()
-        fig2.add_trace(go.Histogram(x=all_wins_rounded["Temperature"], nbinsx=15))
-        fig2.add_trace(go.Histogram(x=wins_rounded["Temperature"], nbinsx=15))
+        fig2.add_traces([go.Histogram(x=all_wins_rounded["Temperature"], name="All players", marker_color="red"), go.Histogram(x=wins_rounded["Temperature"], name=winner_select, marker_color="blue")])
 
         fig2.update_traces(
             opacity=0.75,
             xbins=dict(
                 start=5,
                 end=40,
-                size=2),
+                size=BIN_SIZE_TEMP),
             )
         fig2.update_layout(title_text="Wins and Temperature - Total vs. Individual player",
                            yaxis_title="Wins",
@@ -124,20 +128,20 @@ def all_matches(matches_data, data_type):
         fig3.update_traces(xbins=dict(
             start=0,
             end=100,
-            size=2
+            size=BIN_SIZE_HUM
             ))
         st.plotly_chart(fig3)
 
         fig4 = go.Figure()
-        fig4.add_trace(go.Histogram(x=all_wins_rounded["Humidity"], nbinsx=15))
-        fig4.add_trace(go.Histogram(x=wins_rounded["Humidity"], nbinsx=15))
+        fig4.add_trace(go.Histogram(x=all_wins_rounded["Humidity"], nbinsx=15, name="All players", marker_color="red"))
+        fig4.add_trace(go.Histogram(x=wins_rounded["Humidity"], nbinsx=15, name=winner_select, marker_color="blue"))
 
         fig4.update_traces(
             opacity=0.75,
             xbins=dict(
                 start=0,
                 end=100,
-                size=2),
+                size=BIN_SIZE_HUM),
             )
         fig4.update_layout(title_text="Wins and Humidity - Total vs. Individual player",
                            yaxis_title="Wins",
@@ -155,6 +159,67 @@ def all_matches(matches_data, data_type):
         countries = matches_data["Country"].unique()
         country_select = st.sidebar.selectbox("Pick a country:", countries)
         st.dataframe(matches_data[matches_data["Country"] == country_select], height=DATAFRAME_HEIGHT_LARGE)
+
+    elif choice == "H2H":
+        # TODO Set global variables
+        # TODO How to put small graphs into columns
+
+        winners = matches_data["Winner"].unique()
+        col1, col2 = st.columns(2)
+        player1 = col1.selectbox("Player 1", winners)
+        player2 = col2.selectbox("Player 2", winners)
+
+        player1_wins = (matches_data[matches_data["Winner"] == player1]).round()
+        player2_wins = (matches_data[matches_data["Winner"] == player2]).round()
+        col1.metric("Wins", len(player1_wins))
+        col2.metric("Wins", len(player2_wins))
+
+        ### Humidity
+        fig_hum = go.Figure()
+        fig_hum.add_trace(go.Histogram(x=player1_wins["Humidity"], name=player1, marker_color="red"))
+        fig_hum.add_trace(go.Histogram(x=player2_wins["Humidity"], name=player2, marker_color="blue"))
+
+        fig_hum.update_traces(
+            opacity=0.75,
+            xbins=dict(
+                start=0,
+                end=100,
+                size=BIN_SIZE_HUM),
+            )
+        fig_hum.update_layout(title_text=f"Humidity - Head to Head {player1} vs {player2}",
+                           yaxis_title="Wins",
+                           xaxis_title="Humidity",
+                           barmode="overlay",
+                           width=700,
+                           height=400,
+                           legend_title="Legend"
+                           )
+        fig_hum.update_xaxes(range=[0, 100])
+        fig_hum.update_yaxes(range=[0, 30])
+        st.plotly_chart(fig_hum)
+
+        ### Temperature
+        fig_temp = go.Figure()
+        fig_temp.add_traces([go.Histogram(x=player1_wins["Temperature"], name=player1, marker_color="red"), go.Histogram(x=player2_wins["Temperature"], name=player2, marker_color="blue")])
+
+        fig_temp.update_traces(
+            opacity=0.75,
+            xbins=dict(
+                start=5,
+                end=40,
+                size=0.8),
+            )
+        fig_temp.update_layout(title_text="Wins and Temperature - Total vs. Individual player",
+                           yaxis_title="Wins",
+                           xaxis_title="Temperature",
+                           barmode="overlay",
+                           width=700,
+                           height=400,
+                           legend_title="Legend",
+                           )
+        fig_temp.update_xaxes(range=[5, 40])
+        fig_temp.update_yaxes(range=[0, 30])
+        st.plotly_chart(fig_temp)
 
 
 def all_tournaments(tournament_data):

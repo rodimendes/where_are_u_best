@@ -10,12 +10,12 @@ PASS_DEPART_MAIL = os.environ["PASS_DEPART_MAIL"]
 ARRIVAL_MAIL = os.environ["ARRIVAL_MAIL"]
 
 st.set_page_config(
-    page_title="The Project",
-    page_icon="✍️",
+    page_title="About",
+    page_icon="🧾",
     layout="centered",
 )
 
-st.markdown("# The Project")
+st.markdown("# About the project")
 
 st.markdown("**Where are U best** is a project that seeks to identify the degree of influence of the :green[temperature] and :green[humidity] on female tennis players.")
 st.markdown("For this the python script gets data from the official webpage of female tennis players, that is, [Women's Tennis Association - WTA](https://www.wtatennis.com/) and gathers weather forecast data as temperature and humidity, collected by using API from [OpenWeather](https://openweathermap.org/).")
