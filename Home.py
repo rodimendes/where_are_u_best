@@ -8,7 +8,6 @@ import pandas as pd
 import smtplib
 import os
 from dotenv import load_dotenv
-import matplotlib.pyplot as plt
 
 load_dotenv()
 
