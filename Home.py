@@ -154,7 +154,8 @@ def all_matches(matches_data, data_type):
         st.dataframe(matches_data[matches_data["Country"] == country_select], height=320)
 
     elif choice == "H2H":
-        # TODO 
+        # TODO Set global variables
+        # TODO How to put small graphs into columns
 
         winners = matches_data["Winner"].unique()
         col1, col2 = st.columns(2)
