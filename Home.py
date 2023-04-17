@@ -196,16 +196,16 @@ def all_matches(matches_data, data_type):
 
         ### Temperature
         fig_temp = go.Figure()
-        fig_temp.add_traces([go.Histogram(x=all_wins_rounded["Temperature"], name="All players", marker_color="red"), go.Histogram(x=wins_rounded["Temperature"], name=winner_select, marker_color="blue")])
+        fig_temp.add_traces([go.Histogram(x=player1_wins["Temperature"], name=player1, marker_color="red"), go.Histogram(x=player2_wins["Temperature"], name=player2, marker_color="blue")])
 
-        fig2.update_traces(
+        fig_temp.update_traces(
             opacity=0.75,
             xbins=dict(
                 start=5,
                 end=40,
-                size=BIN_SIZE_TEMP),
+                size=0.8),
             )
-        fig2.update_layout(title_text="Wins and Temperature - Total vs. Individual player",
+        fig_temp.update_layout(title_text="Wins and Temperature - Total vs. Individual player",
                            yaxis_title="Wins",
                            xaxis_title="Temperature",
                            barmode="overlay",
@@ -213,9 +213,9 @@ def all_matches(matches_data, data_type):
                            height=400,
                            legend_title="Legend",
                            )
-        fig2.update_xaxes(range=[5, 40])
-        fig2.update_yaxes(range=[0, 30])
-        st.plotly_chart(fig2)
+        fig_temp.update_xaxes(range=[5, 40])
+        fig_temp.update_yaxes(range=[0, 30])
+        st.plotly_chart(fig_temp)
 
 
 def all_tournaments(tournament_data):
