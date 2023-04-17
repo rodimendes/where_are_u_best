@@ -15,8 +15,12 @@ load_dotenv()
 DEPARTURE_MAIL = os.environ["DEPARTURE_MAIL"]
 PASS_DEPART_MAIL = os.environ["PASS_DEPART_MAIL"]
 ARRIVAL_MAIL = os.environ["ARRIVAL_MAIL"]
+
 BIN_SIZE_TEMP = 1
 BIN_SIZE_HUM = 2
+DATAFRAME_HEIGHT_LARGE = 320
+DATAFRAME_HEIGHT_SMALL = 100
+PX_HEIGHT = 400
 
 st.set_page_config(
     page_title="Where are U best",
@@ -38,7 +42,7 @@ def all_matches(matches_data, data_type):
         col03.metric(label="Total tournaments", value=len(matches_data["Tournament"].unique()))
         col04.metric(label="Total cities", value=len(matches_data["City"].unique()))
         col05.metric(label="Total countries", value=len(matches_data["Country"].unique()))
-        st.dataframe(matches_data, height=320)
+        st.dataframe(matches_data, height=DATAFRAME_HEIGHT_LARGE)
 
     if choice == "Players":
         player_select = st.sidebar.selectbox("Pick a player:", full_players_list)
@@ -82,12 +86,12 @@ def all_matches(matches_data, data_type):
         winners = matches_data["Winner"].unique()
         winner_select = st.sidebar.selectbox("Pick a winner:", winners)
         wins = matches_data[matches_data["Winner"] == winner_select]
-        st.dataframe(wins, height=110)
+        st.dataframe(wins, height=DATAFRAME_HEIGHT_SMALL)
 
         all_wins_rounded = matches_data.round()
         wins_rounded = wins.round()
 
-        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Individual", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=700, height=400)
+        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Individual", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=700, height=PX_HEIGHT)
         fig.update_layout(yaxis_title="Wins")
         fig.update_traces(
             xbins=dict(
@@ -112,14 +116,14 @@ def all_matches(matches_data, data_type):
                            xaxis_title="Temperature",
                            barmode="overlay",
                            width=700,
-                           height=400,
+                           height=PX_HEIGHT,
                            legend_title="Legend",
                            )
         fig2.update_xaxes(range=[5, 40])
         fig2.update_yaxes(range=[0, 30])
         st.plotly_chart(fig2)
 
-        fig3 = px.histogram(wins_rounded, x="Humidity", title="Wins and Humidity - Individual", text_auto=True, range_x=(0, 100), range_y=(0, 30), width=700, height=400)
+        fig3 = px.histogram(wins_rounded, x="Humidity", title="Wins and Humidity - Individual", text_auto=True, range_x=(0, 100), range_y=(0, 30), width=700, height=PX_HEIGHT)
         fig3.update_layout(yaxis_title="Wins")
         fig3.update_traces(xbins=dict(
             start=0,
@@ -144,7 +148,7 @@ def all_matches(matches_data, data_type):
                            xaxis_title="Humidity",
                            barmode="overlay",
                            width=700,
-                           height=400,
+                           height=PX_HEIGHT,
                            legend_title="Legend"
                            )
         fig4.update_xaxes(range=[0, 100])
@@ -154,7 +158,7 @@ def all_matches(matches_data, data_type):
     elif choice == "Country":
         countries = matches_data["Country"].unique()
         country_select = st.sidebar.selectbox("Pick a country:", countries)
-        st.dataframe(matches_data[matches_data["Country"] == country_select], height=320)
+        st.dataframe(matches_data[matches_data["Country"] == country_select], height=DATAFRAME_HEIGHT_LARGE)
 
     elif choice == "H2H":
         # TODO Set global variables
@@ -223,7 +227,7 @@ def all_tournaments(tournament_data):
     Shows all recorded tournaments and its data.
     """
     # Showing recorded tournaments
-    st.dataframe(tournament_data, height=320)
+    st.dataframe(tournament_data, height=DATAFRAME_HEIGHT_LARGE)
 
     # World map with tournaments
     st.markdown("##### Hover over points for more information.")
