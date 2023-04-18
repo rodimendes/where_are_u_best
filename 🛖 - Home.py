@@ -1,7 +1,5 @@
 # TODO Include help to explain fields on project
 # TODO Bin size and nbinsx
-# TODO Del branch for H2H
-# TODO Icon on home
 
 import streamlit as st
 import plotly.graph_objects as go
