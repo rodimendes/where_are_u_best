@@ -1,5 +1,5 @@
 # TODO Include help to explain fields on project
-# TODO Bin size and nbinsx
+# TODO Make predictions
 
 import streamlit as st
 import plotly.graph_objects as go
@@ -204,9 +204,9 @@ def all_matches(matches_data, data_type):
         fig_temp.update_traces(
             opacity=0.75,
             xbins=dict(
-                start=5,
+                start=0,
                 end=40,
-                size=0.8),
+                size=.8),
             )
         fig_temp.update_layout(title_text="Wins and Temperature - Total vs. Individual player",
                            yaxis_title="Wins",
@@ -216,7 +216,7 @@ def all_matches(matches_data, data_type):
                            height=400,
                            legend_title="Legend",
                            )
-        fig_temp.update_xaxes(range=[5, 40])
+        fig_temp.update_xaxes(range=[0, 40])
         fig_temp.update_yaxes(range=[0, 30])
         st.plotly_chart(fig_temp)
 
