@@ -1,4 +1,5 @@
 # TODO Include help to explain fields on project
+# TODO Change dots color for each surface type
 # TODO Make predictions
 
 import streamlit as st
@@ -17,8 +18,10 @@ ARRIVAL_MAIL = os.environ["ARRIVAL_MAIL"]
 
 DATAFRAME_HEIGHT_LARGE = 320
 DATAFRAME_HEIGHT_SMALL = 100
+DATAFRAME_WIDTH_LARGE = 650
 PX_HEIGHT = 400
-BIN_SIZE_TEMP = 1
+PX_WIDTH = 700
+BIN_SIZE_TEMP = 0.8
 BIN_SIZE_HUM = 2
 
 st.set_page_config(
@@ -28,20 +31,20 @@ st.set_page_config(
 )
 
 def all_matches(matches_data, data_type):
-    choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Country", "H2H"], horizontal=True)
+    choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Country", "H2H"], horizontal=True, help="For some options below, new filters are available.")
     players1 = matches_data["Player 1"].unique()
     players2 = matches_data["Player 2"].unique()
     full_players_list = sorted(list(set(players1) | set(players2)))
 
     if choice == "General":
-        st.write(f"See the whole **{data_type}** dataset.")
+        st.markdown(f"#### View the `{data_type}` dataset sample.")
         col01, col02, col03, col04, col05 = st.columns(5)
         col01.metric(label="Saved matches", value=len(matches_data))
         col02.metric(label="Total players", value=len(full_players_list))
         col03.metric(label="Total tournaments", value=len(matches_data["Tournament"].unique()))
         col04.metric(label="Total cities", value=len(matches_data["City"].unique()))
         col05.metric(label="Total countries", value=len(matches_data["Country"].unique()))
-        st.dataframe(matches_data, height=DATAFRAME_HEIGHT_LARGE)
+        st.dataframe(matches_data.sample(8), height=DATAFRAME_HEIGHT_LARGE, width=DATAFRAME_WIDTH_LARGE)
 
     if choice == "Players":
         player_select = st.sidebar.selectbox("Pick a player:", full_players_list)
@@ -90,7 +93,7 @@ def all_matches(matches_data, data_type):
         all_wins_rounded = matches_data.round()
         wins_rounded = wins.round()
 
-        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Individual", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=700, height=PX_HEIGHT)
+        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Chosen Player", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=PX_WIDTH, height=PX_HEIGHT)
         fig.update_layout(yaxis_title="Wins")
         fig.update_traces(
             xbins=dict(
@@ -110,19 +113,20 @@ def all_matches(matches_data, data_type):
                 end=40,
                 size=BIN_SIZE_TEMP),
             )
-        fig2.update_layout(title_text="Wins and Temperature - Total vs. Individual player",
+        fig2.update_layout(title_text="Wins and Temperature - All Players vs. Chosen Player",
                            yaxis_title="Wins",
                            xaxis_title="Temperature",
                            barmode="overlay",
-                           width=700,
+                           width=PX_WIDTH,
                            height=PX_HEIGHT,
                            legend_title="Legend",
+                           legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.8)
                            )
         fig2.update_xaxes(range=[5, 40])
         fig2.update_yaxes(range=[0, 30])
         st.plotly_chart(fig2)
 
-        fig3 = px.histogram(wins_rounded, x="Humidity", title="Wins and Humidity - Individual", text_auto=True, range_x=(0, 100), range_y=(0, 30), width=700, height=PX_HEIGHT)
+        fig3 = px.histogram(wins_rounded, x="Humidity", title="Wins and Humidity - Chosen Player", text_auto=True, range_x=(0, 100), range_y=(0, 30), width=PX_WIDTH, height=PX_HEIGHT)
         fig3.update_layout(yaxis_title="Wins")
         fig3.update_traces(xbins=dict(
             start=0,
@@ -132,8 +136,8 @@ def all_matches(matches_data, data_type):
         st.plotly_chart(fig3)
 
         fig4 = go.Figure()
-        fig4.add_trace(go.Histogram(x=all_wins_rounded["Humidity"], nbinsx=15, name="All players", marker_color="red"))
-        fig4.add_trace(go.Histogram(x=wins_rounded["Humidity"], nbinsx=15, name=winner_select, marker_color="blue"))
+        fig4.add_trace(go.Histogram(x=all_wins_rounded["Humidity"], name="All players", marker_color="red"))
+        fig4.add_trace(go.Histogram(x=wins_rounded["Humidity"], name=winner_select, marker_color="blue"))
 
         fig4.update_traces(
             opacity=0.75,
@@ -142,13 +146,14 @@ def all_matches(matches_data, data_type):
                 end=100,
                 size=BIN_SIZE_HUM),
             )
-        fig4.update_layout(title_text="Wins and Humidity - Total vs. Individual player",
+        fig4.update_layout(title_text="Wins and Humidity - All Players vs. Chosen player",
                            yaxis_title="Wins",
                            xaxis_title="Humidity",
                            barmode="overlay",
-                           width=700,
+                           width=PX_WIDTH,
                            height=PX_HEIGHT,
-                           legend_title="Legend"
+                           legend_title="Legend",
+                           legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.8)
                            )
         fig4.update_xaxes(range=[0, 100])
         fig4.update_yaxes(range=[0, 30])
@@ -189,9 +194,10 @@ def all_matches(matches_data, data_type):
                            yaxis_title="Wins",
                            xaxis_title="Humidity",
                            barmode="overlay",
-                           width=700,
-                           height=400,
-                           legend_title="Legend"
+                           width=PX_WIDTH,
+                           height=PX_HEIGHT,
+                           legend_title="Legend",
+                           legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.8)
                            )
         fig_hum.update_xaxes(range=[0, 100])
         fig_hum.update_yaxes(range=[0, 30])
@@ -208,32 +214,37 @@ def all_matches(matches_data, data_type):
                 end=40,
                 size=.8),
             )
-        fig_temp.update_layout(title_text="Wins and Temperature - Total vs. Individual player",
+        fig_temp.update_layout(title_text=f"Temperature - Head to Head {player1} vs {player2}",
                            yaxis_title="Wins",
                            xaxis_title="Temperature",
                            barmode="overlay",
-                           width=700,
-                           height=400,
+                           width=PX_WIDTH,
+                           height=PX_HEIGHT,
                            legend_title="Legend",
+                           legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.8)
                            )
         fig_temp.update_xaxes(range=[0, 40])
         fig_temp.update_yaxes(range=[0, 30])
         st.plotly_chart(fig_temp)
 
 
-def all_tournaments(tournament_data):
+def all_tournaments(tournament_data, data_type):
     """
     Shows all recorded tournaments and its data.
     """
     # Showing recorded tournaments
-    st.dataframe(tournament_data, height=DATAFRAME_HEIGHT_LARGE)
+    st.markdown(f"#### See recorded `{data_type}` dataset.")
+    col01, col02, col03 = st.columns(3)
+    col01.metric(label="Saved Tournaments", value=len(tournament_data["Name"].unique()))
+    col02.metric(label="Total Cities", value=len(tournament_data["City"].unique()))
+    col03.metric(label="Total Countries", value=len(tournament_data["Country"].unique()))
+    # st.dataframe(tournament_data, height=DATAFRAME_HEIGHT_LARGE)
 
     # World map with tournaments
     st.markdown("##### Hover over points for more information.")
     tournaments_coord = pd.read_pickle("tournaments_files/tournaments_coord.pkl")
     fig = px.scatter_mapbox(data_frame=tournaments_coord, lat="lat", lon="lon", zoom=0.5, hover_name="name", hover_data=["city", "country", "surface"], labels={"city": "City", "surface": "Surface", "country": "Country", "lat": "Latitude", "lon": "Longitude"})
-    fig.update_layout(mapbox_style="carto-positron")
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
     st.plotly_chart(fig)
 
 
@@ -258,7 +269,7 @@ if add_sidebar == "Matches":
 
 
 if add_sidebar == "Tournaments":
-    all_tournaments(tournament_data=tournaments)
+    all_tournaments(tournament_data=tournaments, data_type=add_sidebar)
 
 st.sidebar.write("---")
 st.sidebar.markdown("#### 📬 Contacts")
@@ -267,7 +278,7 @@ st.sidebar.info('👨🏻‍💻 **Rodrigo Mendes** - [LinkedIn](https://www.lin
 with st.sidebar.form(key="form", clear_on_submit=True):
     text = st.text_area("Feel free to give me some impressions or suggestions")
     name = st.text_input(label="Name")
-    email = st.text_input(label="E-mail for response")
+    email = st.text_input(label="Email for reply, if you want.")
     submit = st.form_submit_button()
     if submit:
         st.success("Message sent successfully")
