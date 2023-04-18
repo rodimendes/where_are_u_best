@@ -37,6 +37,14 @@ with col02:
             - temperature, and
             - humidity.""")
 
+st.markdown("""OK. But what do temperature and humidity have to do with a tennis match?
+All!
+For amateur players the interference is little or not noticed. But when we talk about high-level or professional players, small variations in playing conditions are strongly noticed - have you noticed that the speed of the serve changes when done with new balls or, with each serve, we see a dance of the balls in the hands of the tennis players?
+As well as the "age" of the balls, humidity and temperature alter the speed of the game, the behavior of the balls after the hits.
+For example, with higher temperatures, balls tend to bounce more.
+FALAR DO IMPACTO NO CORPO DO ATLETA
+""")
+
 st.warning("**This project is non-commercial, that is, it is not primarily intended or directed for commercial advantage or monetary compensation by an individual or organization.**")
 st.markdown("---")
 st.markdown("# 🏗 Under construction 🦺")

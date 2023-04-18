@@ -1,6 +1,5 @@
-# TODO Include help to explain fields on project
-# TODO Change dots color for each surface type
 # TODO Make predictions
+# TODO Write about temperature and humidity
 
 import streamlit as st
 import plotly.graph_objects as go
@@ -243,7 +242,7 @@ def all_tournaments(tournament_data, data_type):
     # World map with tournaments
     st.markdown("##### Hover over points for more information.")
     tournaments_coord = pd.read_pickle("tournaments_files/tournaments_coord.pkl")
-    fig = px.scatter_mapbox(data_frame=tournaments_coord, lat="lat", lon="lon", zoom=0.5, hover_name="name", hover_data=["city", "country", "surface"], labels={"city": "City", "surface": "Surface", "country": "Country", "lat": "Latitude", "lon": "Longitude"})
+    fig = px.scatter_mapbox(data_frame=tournaments_coord, lat="lat", lon="lon", zoom=0.5, hover_name="name", hover_data=["city", "country", "surface"], labels={"city": "City", "surface": "Surface", "country": "Country", "lat": "Latitude", "lon": "Longitude"}, color=tournaments_coord["surface"], color_discrete_sequence=["blue", "chocolate", "green"])
     fig.update_layout(mapbox_style="carto-positron", margin={"r":0,"t":0,"l":0,"b":0})
     st.plotly_chart(fig)
 
