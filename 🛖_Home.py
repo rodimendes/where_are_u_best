@@ -1,5 +1,4 @@
 # TODO Make predictions
-# TODO Write about temperature and humidity
 
 import streamlit as st
 import plotly.graph_objects as go
@@ -75,6 +74,21 @@ def all_matches(matches_data, data_type):
         col4.metric(label="Mean temperature", value=f"{mean_temp:.2f}", delta=f"{std_dev_temp.max():.2f}", help="The green value represents the standard deviation for collected values so far.")
         col5.metric(label="Mean humidity", value=f"{mean_humidity:.2f}", delta=f"{std_dev_hum.max():.2f}", help="The green value represents the standard deviation for collected values so far.")
 
+        ####
+        
+
+        all_wins_rounded = matches_data.round()
+        wins_rounded = wins.round()
+        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Chosen Player", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=PX_WIDTH, height=PX_HEIGHT)
+        fig.update_layout(yaxis_title="Wins")
+        fig.update_traces(
+            xbins=dict(
+                start=0,
+                end=40,
+                size=BIN_SIZE_TEMP)
+            )
+        st.plotly_chart(fig)
+        ####
         i_will_try = st.sidebar.checkbox("Do you want to try?")
         if i_will_try:
             desired_temp = st.sidebar.slider(label='Temperature', min_value=5, max_value=50, value=(10, 40))
@@ -96,7 +110,7 @@ def all_matches(matches_data, data_type):
         fig.update_layout(yaxis_title="Wins")
         fig.update_traces(
             xbins=dict(
-                start=5,
+                start=0,
                 end=40,
                 size=BIN_SIZE_TEMP)
             )
@@ -108,7 +122,7 @@ def all_matches(matches_data, data_type):
         fig2.update_traces(
             opacity=0.75,
             xbins=dict(
-                start=5,
+                start=0,
                 end=40,
                 size=BIN_SIZE_TEMP),
             )
@@ -121,7 +135,7 @@ def all_matches(matches_data, data_type):
                            legend_title="Legend",
                            legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.8)
                            )
-        fig2.update_xaxes(range=[5, 40])
+        fig2.update_xaxes(range=[0, 40])
         fig2.update_yaxes(range=[0, 30])
         st.plotly_chart(fig2)
 
