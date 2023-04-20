@@ -16,7 +16,6 @@ ARRIVAL_MAIL = os.environ["ARRIVAL_MAIL"]
 
 DATAFRAME_HEIGHT_LARGE = 320
 DATAFRAME_HEIGHT_SMALL = 100
-DATAFRAME_WIDTH_LARGE = 650
 PX_HEIGHT = 400
 PX_WIDTH = 700
 BIN_SIZE_TEMP = 0.8
@@ -42,7 +41,7 @@ def all_matches(matches_data, data_type):
         col03.metric(label="Total tournaments", value=len(matches_data["Tournament"].unique()))
         col04.metric(label="Total cities", value=len(matches_data["City"].unique()))
         col05.metric(label="Total countries", value=len(matches_data["Country"].unique()))
-        st.dataframe(matches_data.sample(8), height=DATAFRAME_HEIGHT_LARGE, width=DATAFRAME_WIDTH_LARGE)
+        st.dataframe(matches_data.sample(8), height=DATAFRAME_HEIGHT_LARGE)
 
     if choice == "Players":
         player_select = st.sidebar.selectbox("Pick a player:", full_players_list)
@@ -63,7 +62,7 @@ def all_matches(matches_data, data_type):
         mean_temp = (player_df["Temperature"]).mean()
         std_dev_temp = pd.DataFrame(player_df["Temperature"]).std()
 
-        #Humidity
+        # Humidity
         mean_humidity = (player_df["Humidity"]).mean()
         std_dev_hum = pd.DataFrame(player_df["Humidity"]).std()
 
@@ -74,21 +73,69 @@ def all_matches(matches_data, data_type):
         col4.metric(label="Mean temperature", value=f"{mean_temp:.2f}", delta=f"{std_dev_temp.max():.2f}", help="The green value represents the standard deviation for collected values so far.")
         col5.metric(label="Mean humidity", value=f"{mean_humidity:.2f}", delta=f"{std_dev_hum.max():.2f}", help="The green value represents the standard deviation for collected values so far.")
 
-        ####
+        wins_df = (player_df[player_df["Winner"].str.contains(player_select[-4:])]).round()
+        defeats_df = (player_df[player_df["Winner"].str.contains(player_select[-4:])==False]).round()
 
-        # all_wins_rounded = matches_data.round()
-        # wins_rounded = wins.round()
-        # fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Chosen Player", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=PX_WIDTH, height=PX_HEIGHT)
-        # fig.update_layout(yaxis_title="Wins")
-        # fig.update_traces(
-        #     xbins=dict(
-        #         start=0,
-        #         end=40,
-        #         size=BIN_SIZE_TEMP)
-        #     )
-        # st.plotly_chart(fig)
+        fig = go.Figure()
+        if wins_df.shape[0] == 0:
+            fig.add_trace(go.Histogram(x=defeats_df["Temperature"], name="Defeats", marker_color="red"))
+            fig.update_layout(title_text="Temperature - Defeats")
+        elif defeats_df.shape[0] == 0:
+            fig.add_trace(go.Histogram(x=wins_df["Temperature"], name="Wins", marker_color="green"))
+            fig.update_layout(title_text="Temperature - Wins")
+        else:
+            fig.add_traces([go.Histogram(x=wins_df["Temperature"], name="Wins", marker_color="green"), go.Histogram(x=defeats_df["Temperature"], name="Defeats", marker_color="red")])
+            fig.update_layout(title_text="Temperature - Wins vs. Defeats")
 
-        ####
+        fig.update_traces(
+            opacity=0.75,
+            xbins=dict(
+                start=0,
+                end=40,
+                size=BIN_SIZE_TEMP),
+            )
+        fig.update_layout(yaxis_title="Wins",
+                          xaxis_title="Temperature",
+                          barmode="overlay",
+                          width=PX_WIDTH,
+                          height=PX_HEIGHT,
+                          legend_title="Legend",
+                          legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.8)
+                          )
+        fig.update_xaxes(range=[0, 40])
+        fig.update_yaxes(range=[0, 30])
+        st.plotly_chart(fig)
+
+
+        fig2 = go.Figure()
+        if wins_df.shape[0] == 0:
+            fig2.add_trace(go.Histogram(x=defeats_df["Humidity"], name="Defeats", marker_color="red"))
+            fig2.update_layout(title_text="Humidity - Defeats")
+        elif defeats_df.shape[0] == 0:
+            fig2.add_trace(go.Histogram(x=wins_df["Humidity"], name="Wins", marker_color="green"))
+            fig2.update_layout(title_text="Humidity - Wins")
+        else:
+            fig2.add_traces([go.Histogram(x=wins_df["Humidity"], name="Wins", marker_color="green"), go.Histogram(x=defeats_df["Humidity"], name="Defeats", marker_color="red")])
+            fig2.update_layout(title_text="Humidity - Wins vs. Defeats")
+
+        fig2.update_traces(
+            opacity=0.75,
+            xbins=dict(
+                start=0,
+                end=100,
+                size=BIN_SIZE_HUM),
+            )
+        fig2.update_layout(yaxis_title="Wins",
+                          xaxis_title="Humidity",
+                          barmode="overlay",
+                          width=PX_WIDTH,
+                          height=PX_HEIGHT,
+                          legend_title="Legend",
+                          legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.8)
+                          )
+        fig2.update_xaxes(range=[0, 100])
+        fig2.update_yaxes(range=[0, 30])
+        st.plotly_chart(fig2)
 
         i_will_try = st.sidebar.checkbox("Do you want to try?")
         if i_will_try:
@@ -107,7 +154,7 @@ def all_matches(matches_data, data_type):
         all_wins_rounded = matches_data.round()
         wins_rounded = wins.round()
 
-        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Chosen Player", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=PX_WIDTH, height=PX_HEIGHT)
+        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Chosen Player", text_auto=True, range_x=(0, 40), range_y=(0, 30), width=PX_WIDTH, height=PX_HEIGHT)
         fig.update_layout(yaxis_title="Wins")
         fig.update_traces(
             xbins=dict(
@@ -179,7 +226,6 @@ def all_matches(matches_data, data_type):
         st.dataframe(matches_data[matches_data["Country"] == country_select], height=DATAFRAME_HEIGHT_LARGE)
 
     elif choice == "H2H":
-        # TODO Set global variables
         # TODO How to put small graphs into columns
 
         winners = matches_data["Winner"].unique()
@@ -247,12 +293,11 @@ def all_tournaments(tournament_data, data_type):
     Shows all recorded tournaments and its data.
     """
     # Showing recorded tournaments
-    st.markdown(f"#### See recorded `{data_type}` dataset.")
+    st.markdown(f"#### See recorded `{data_type}`.")
     col01, col02, col03 = st.columns(3)
     col01.metric(label="Saved Tournaments", value=len(tournament_data["Name"].unique()))
     col02.metric(label="Total Cities", value=len(tournament_data["City"].unique()))
     col03.metric(label="Total Countries", value=len(tournament_data["Country"].unique()))
-    # st.dataframe(tournament_data, height=DATAFRAME_HEIGHT_LARGE)
 
     # World map with tournaments
     st.markdown("##### Hover over points for more information.")

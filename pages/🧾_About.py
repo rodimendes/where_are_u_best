@@ -37,7 +37,7 @@ with col02:
             - temperature, and
             - humidity.""")
 
-st.markdown("OK. But what do temperature and humidity have to do with a tennis match? 🤔")
+st.markdown("OK. But what do :green[temperature] and :green[humidity] have to do with a tennis match? 🤔")
 st.markdown("Everything! 👀")
 st.markdown("For amateur players the interference is little or not noticed. But when we talk about high-level or professional players, small variations in playing conditions have a greater impact on the athlete's performance - have you noticed that the speed of the serve changes when done with new balls or, with each serve, we see a dance of the balls in the hands of tennis players?")
 st.markdown("As well as the “age” of the balls, humidity and temperature alter the speed of the game, the behavior of the balls after hitting.")
@@ -49,7 +49,7 @@ st.markdown("---")
 st.markdown("# 🏗 Under construction 🦺")
 st.markdown("""### New features to implement:""")
 st.markdown("- ~~H2H, with graph based on temperature and humidity~~; ✅")
-st.markdown("- Wins and losses for each player according to temperature and humidity;")
+st.markdown("- ~~Wins and losses for each player according to temperature and humidity~~; ✅")
 st.markdown("- Prediction of results based on temperature and humidity;")
 
 st.sidebar.markdown("#### 📬 Contacts")
