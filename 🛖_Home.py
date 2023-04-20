@@ -75,20 +75,21 @@ def all_matches(matches_data, data_type):
         col5.metric(label="Mean humidity", value=f"{mean_humidity:.2f}", delta=f"{std_dev_hum.max():.2f}", help="The green value represents the standard deviation for collected values so far.")
 
         ####
-        
 
-        all_wins_rounded = matches_data.round()
-        wins_rounded = wins.round()
-        fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Chosen Player", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=PX_WIDTH, height=PX_HEIGHT)
-        fig.update_layout(yaxis_title="Wins")
-        fig.update_traces(
-            xbins=dict(
-                start=0,
-                end=40,
-                size=BIN_SIZE_TEMP)
-            )
-        st.plotly_chart(fig)
+        # all_wins_rounded = matches_data.round()
+        # wins_rounded = wins.round()
+        # fig = px.histogram(wins_rounded, x="Temperature", title="Wins and Temperature - Chosen Player", text_auto=True, range_x=(5, 40), range_y=(0, 30), width=PX_WIDTH, height=PX_HEIGHT)
+        # fig.update_layout(yaxis_title="Wins")
+        # fig.update_traces(
+        #     xbins=dict(
+        #         start=0,
+        #         end=40,
+        #         size=BIN_SIZE_TEMP)
+        #     )
+        # st.plotly_chart(fig)
+
         ####
+
         i_will_try = st.sidebar.checkbox("Do you want to try?")
         if i_will_try:
             desired_temp = st.sidebar.slider(label='Temperature', min_value=5, max_value=50, value=(10, 40))
