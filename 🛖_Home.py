@@ -1,4 +1,5 @@
 # TODO Make predictions
+# TODO Displays current weather of tournament cities
 
 import streamlit as st
 import plotly.graph_objects as go
