@@ -7,7 +7,6 @@ import pandas as pd
 import smtplib
 import os
 from dotenv import load_dotenv
-from main_tasks.weather import current_weather
 
 load_dotenv()
 
