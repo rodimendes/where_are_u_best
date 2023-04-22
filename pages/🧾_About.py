@@ -1,5 +1,3 @@
-# TODO Image with process to gather, clean, organize and save data (pickle and SQL)
-
 import streamlit as st
 import smtplib
 import os
@@ -23,6 +21,8 @@ st.markdown("**Where are U best** is a project that seeks to identify the degree
 st.markdown("For this the python script gets data from the official webpage of female tennis players, that is, [Women's Tennis Association - WTA](https://www.wtatennis.com/) and gathers weather forecast data as temperature and humidity, collected by using API from [OpenWeather](https://openweathermap.org/).")
 st.markdown("After collecting, cleaning and structuring the data as a dictionary, these are converted to a dataframe and stored in a relational database (MySQL).")
 st.markdown("For display on this platform, we chose to use the data serialization technique, in pickle format, which allowed for greater speed in accessing and displaying data compared to performing queries in an RDBMS.")
+col_image1, col_image2, col_image3 = st.columns([1, 40, 1])
+col_image2.image(image="images/full_process.png", caption="Full Process")
 st.markdown("On this first approach we've collected the following information:")
 col01, col02, col03, col04 = st.columns(4)
 with col01:
@@ -54,6 +54,7 @@ st.markdown("# 🏗 Under construction 🦺")
 st.markdown("""### New features to implement:""")
 st.markdown("- ~~H2H, with graph based on temperature and humidity~~; ✅")
 st.markdown("- ~~Wins and losses for each player according to temperature and humidity~~; ✅")
+st.markdown("- Displays current weather of tournament cities;")
 st.markdown("- Prediction of results based on temperature and humidity;")
 
 st.sidebar.markdown("#### 📬 Contacts")
