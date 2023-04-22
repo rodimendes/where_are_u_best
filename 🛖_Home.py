@@ -33,6 +33,8 @@ def all_matches(matches_data, data_type):
     players2 = matches_data["Player 2"].unique()
     full_players_list = sorted(list(set(players1) | set(players2)))
 
+    st.title(f"🎾 Where are U best - {choice}")
+
     if choice == "General":
         st.markdown(f"#### View the `{data_type}` dataset sample.")
         col01, col02, col03, col04, col05 = st.columns(5)
@@ -292,6 +294,7 @@ def all_tournaments(tournament_data, data_type):
     """
     Shows all recorded tournaments and its data.
     """
+    st.title(f"🎾 Where are U best - Tournaments")
     # Showing recorded tournaments
     st.markdown(f"#### See recorded `{data_type}`.")
     col01, col02, col03 = st.columns(3)
@@ -309,7 +312,7 @@ def all_tournaments(tournament_data, data_type):
 
 
 ### Page Start ###
-st.title("🎾 Where are U best")
+# st.title("🎾 Where are U best")
 
 ### Adding sidebar ###
 add_sidebar = st.sidebar.radio("Select one of the options below:", ("Matches", "Tournaments"), horizontal=True)
