@@ -10,6 +10,62 @@ load_dotenv()
 api_key = os.environ.get("OPENWEATHER_KEY")
 
 
+def current_weather():
+    with open("tournaments_files/tournaments.pkl", 'rb') as file:
+        lista = pickle.load(file)
+
+    today = dt.datetime.today()
+    full_start_dt = lista.start_date + ' ' + lista.year
+    full_end_dt = lista.end_date + ' ' + lista.year
+
+    cities = []
+    current_temperature = []
+    current_humidity = []
+    for pos, row in lista.iterrows():
+        end_date = dt.datetime.strptime(full_end_dt[pos], '%b %d %Y')
+        start_date = dt.datetime.strptime(full_start_dt[pos], '%b %d %Y')
+        if start_date <= today and end_date >= today:
+            cities.append(row.city)
+            coord_params = {
+                    "appid": api_key,
+                    "q": row.city,
+                    "limit": 1,
+                    }
+                    # Getting latitude and longitude
+            coord_url = f"http://api.openweathermap.org/geo/1.0/direct"
+            coord_response = requests.get(coord_url, params=coord_params)
+            coord_response.raise_for_status() # returns an HTTPError object if an error has occurred during the process. It is used for debugging the requests module.
+            lat = coord_response.json()[0]['lat']
+            long = coord_response.json()[0]['lon']
+
+            # Getting current temperature and humidity
+            parameters = {
+                    "appid": api_key,
+                    "units": "metric",
+                    "lat": lat,
+                    "lon": long,
+                    "exclude": "minutely,hourly,alerts,daily"
+                    }
+
+            endpoint = f"https://api.openweathermap.org/data/2.5/onecall"
+
+            response = requests.get(endpoint, params=parameters)
+            response.raise_for_status
+            weather_data = response.json()
+            current_temperature.append(weather_data['current']['feels_like'])
+            current_humidity.append(weather_data['current']['humidity'])
+
+    weather_dict = {
+        "city": cities,
+        "temperature": current_temperature,
+        "humidity": current_humidity
+    }
+
+    current_weather_df = pd.DataFrame(weather_dict, columns=[column for column in weather_dict.keys()])
+
+    with open("weather_files/current_weather.pkl", 'wb') as file:
+            pickle.dump(current_weather_df, file)
+
 def weather_data():
     """
     It checks the city hosting a current tournament, locates its latitude and longitude, and then collects the temperature and humidity for the next seven days. Returns a dictionary with the name of the city, forecast date, temperature and humidity.

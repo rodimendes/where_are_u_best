@@ -1,5 +1,4 @@
 # TODO Make predictions
-# TODO Displays current weather of tournament cities
 
 import streamlit as st
 import plotly.graph_objects as go
@@ -8,6 +7,7 @@ import pandas as pd
 import smtplib
 import os
 from dotenv import load_dotenv
+from main_tasks.weather import current_weather
 
 load_dotenv()
 
@@ -330,6 +330,13 @@ if add_sidebar == "Matches":
 
 if add_sidebar == "Tournaments":
     all_tournaments(tournament_data=tournaments, data_type=add_sidebar)
+
+st.sidebar.write("---")
+weather_data = pd.read_pickle("weather_files/current_weather.pkl")
+weather_data.columns = ["City", "Temperature", "Humidity"]
+weather_data.set_index("City", inplace=True)
+st.sidebar.markdown("#### Cities with active tournament and current weather conditions:")
+st.sidebar.dataframe(weather_data)
 
 st.sidebar.write("---")
 st.sidebar.markdown("#### 📬 Contacts")
