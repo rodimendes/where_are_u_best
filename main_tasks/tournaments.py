@@ -53,7 +53,6 @@ def get_tournaments_info_to_dict(html_file):
         'year': year
     }
 
-    # print(tournaments_dict)
     return tournaments_dict
 
 
@@ -66,16 +65,20 @@ def to_dataframe(tournaments: dict):
     try:
         with open(f"tournaments_files/tournaments.pkl", "rb") as old_file:
             old_data = pickle.load(old_file)
-        full_data = pd.concat([old_data, tournaments_df], ignore_index=True)
+        reunited_data = pd.concat([old_data, tournaments_df], ignore_index=True)
+        full_data = pd.concat([reunited_data, old_data], ignore_index=True)
+        print("Dropping duplicated data")
         uptodate_tournaments = full_data.drop_duplicates(subset=["name", "year"], keep="first", ignore_index=True)
-        cleaned_data = full_data.drop_duplicates(subset=["name", "year"], keep=False, ignore_index=True)
+        new_data = full_data.drop_duplicates(subset=["name", "year"], keep=False, ignore_index=True)
+        if new_data.shape[0] == 0:
+            print("Nothing to save")
         with open("tournaments_files/tournaments.pkl", "wb") as file:
             pickle.dump(uptodate_tournaments, file)
-        print("Duplicate data has been dropped.")
-        return cleaned_data
+
+        return new_data
 
     except:
-        print("Saving full data.")
+        print("Saving full data")
         with open("tournaments_files/tournaments.pkl", "wb") as file:
             pickle.dump(tournaments_df, file)
         return tournaments_df
@@ -85,14 +88,6 @@ def to_database(tournaments: pd.DataFrame):
     """
     Loads the data into database for further analysis.
     """
-    # connection = mysql.connector.connect(
-    #     user = os.environ.get("AWSUSER"), # nome usuário principal
-    #     password = os.environ.get("AWSPASSWORD"),
-    #     host = os.environ.get("AWSHOST"), # endpoint
-    #     port = 3306,
-    #     database = os.environ.get("DATABASE") # nome do db
-    # )
-
     connection = mysql.connector.connect(
         user = 'root',
         password = os.environ.get("LOCALPASSWORD"),
@@ -138,7 +133,7 @@ def get_data_from_db():
     return content
 
 
-# Getting tournament list and loading database
+### Getting tournament list and loading database
 main_url = "https://www.wtatennis.com/tournaments"
 source_file = get_data_source(url=main_url)
 tournament_dict = get_tournaments_info_to_dict(source_file)

@@ -1,3 +1,5 @@
+# TODO Consertar climate_forecast.pkl e checar se as previsões estão se repetindo
+
 import requests
 import pickle
 import os
@@ -24,7 +26,7 @@ def current_weather():
     for pos, row in lista.iterrows():
         end_date = dt.datetime.strptime(full_end_dt[pos], '%b %d %Y')
         start_date = dt.datetime.strptime(full_start_dt[pos], '%b %d %Y')
-        if start_date <= today and end_date >= today:
+        if start_date <= today and end_date >= today: # Look at the tournament official starting date
             cities.append(row.city)
             coord_params = {
                     "appid": api_key,
@@ -55,13 +57,13 @@ def current_weather():
             current_temperature.append(weather_data['current']['feels_like'])
             current_humidity.append(weather_data['current']['humidity'])
 
-    weather_dict = {
+    current_weather_dict = {
         "city": cities,
         "temperature": current_temperature,
         "humidity": current_humidity
     }
 
-    current_weather_df = pd.DataFrame(weather_dict, columns=[column for column in weather_dict.keys()])
+    current_weather_df = pd.DataFrame(current_weather_dict, columns=[column for column in current_weather_dict.keys()])
 
     with open("weather_files/current_weather.pkl", 'wb') as file:
             pickle.dump(current_weather_df, file)
@@ -83,7 +85,7 @@ def weather_data():
     for pos, start in enumerate(full_start_dt):
         start_date = dt.datetime.strptime(start, '%b %d %Y')
         end_date = dt.datetime.strptime(full_end_dt[pos], '%b %d %Y')
-        if (start_date - today).days >= 0 and (today < end_date):
+        if (start_date - today).days >= 0 and (today <= end_date):
             city_name = lista['city'][pos]
             print(f'Getting data from {city_name} tournament.')
 
@@ -92,6 +94,7 @@ def weather_data():
             "q": city_name,
             "limit": 1,
             }
+
             # Get latitude and longitude
             coord_url = f"http://api.openweathermap.org/geo/1.0/direct"
             coord_response = requests.get(coord_url, params=coord_params)
@@ -148,13 +151,18 @@ def to_dataframe(weather_dict: dict):
         last_weather_forecast = "weather_files/climate_forecast.pkl"
         with open(last_weather_forecast, "rb") as file:
             last_forecast = pickle.load(file)
-        full_forecast = pd.concat([last_forecast, weather_df], ignore_index=True)
+        reunited_data = pd.concat([last_forecast, weather_df], ignore_index=True)
+        full_forecast = pd.concat([reunited_data, last_forecast], ignore_index=True)
         uptodate_forecast = full_forecast.drop_duplicates(subset=['name', 'dates'], keep="first", ignore_index=True)
         cleaned_forecast = full_forecast.drop_duplicates(subset=['name', 'dates'], keep=False, ignore_index=True)
+        if cleaned_forecast.shape[0] == 0:
+            print("Nothing to save")
         with open("weather_files/climate_forecast.pkl", "wb") as file:
             pickle.dump(uptodate_forecast, file)
         return cleaned_forecast
+
     except:
+        print("Saving full data")
         with open("weather_files/climate_forecast.pkl", 'wb') as file:
             pickle.dump(weather_df, file)
         return weather_df
@@ -185,6 +193,7 @@ def to_database(weather: pd.DataFrame):
                 connection.commit()
         print("Weather data uploaded successfully")
     return
+
 
 weather_dict = weather_data()
 weather_df = to_dataframe(weather_dict)

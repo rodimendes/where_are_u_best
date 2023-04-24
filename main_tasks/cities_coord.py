@@ -42,7 +42,7 @@ try:
         # if new_data.shape[0] == 0:
         #     print("Nothing to save")
         keep_data = full_data.drop_duplicates(subset=['name', 'city', 'country', 'year'], keep="first", ignore_index=True)
-        with open(f"matches/daily.pkl", "wb") as file:
+        with open("matches/daily.pkl", "wb") as file:
             pickle.dump(keep_data, file)
 except:
     with open(f"tournaments_files/tournaments_coord.pkl", "wb") as file:

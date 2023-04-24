@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import pickle
 import mysql.connector
+from weather import current_weather
 
 
 load_dotenv()
@@ -106,7 +107,7 @@ def get_matches_info_to_dict(source_code):
                     "units": "metric",
                     "lat": lat,
                     "lon": long,
-                    "exclude": "minutely,hourly,alerts,daily"
+                    "exclude": "minutely, hourly, alerts, daily"
                     }
 
             endpoint = f"https://api.openweathermap.org/data/2.5/onecall"
@@ -142,6 +143,7 @@ def to_dataframe(player_matches: dict):
     if len(player_matches["player1"]) == 0:
         matches_df = pd.DataFrame(player_matches, columns=[column for column in player_matches.keys()])
         return matches_df
+
     else:
         matches_df = pd.DataFrame(player_matches, columns=[column for column in player_matches.keys()])
         try:
@@ -213,3 +215,4 @@ source_code_to_test = get_source_code("https://www.wtatennis.com/scores")
 matches_dict = get_matches_info_to_dict(source_code_to_test)
 matches_df = to_dataframe(matches_dict)
 to_database(matches_df)
+current_weather()

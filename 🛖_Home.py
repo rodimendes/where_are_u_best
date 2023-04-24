@@ -294,7 +294,7 @@ def all_tournaments(tournament_data, data_type):
     """
     Shows all recorded tournaments and its data.
     """
-    st.title(f"🎾 Where are U best - Tournaments")
+    st.title("🎾 Where are U best - Tournaments")
     # Showing recorded tournaments
     st.markdown(f"#### See recorded `{data_type}`.")
     col01, col02, col03 = st.columns(3)
