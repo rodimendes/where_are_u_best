@@ -316,7 +316,6 @@ def all_tournaments(tournament_data, data_type):
 # st.title("🎾 Where are U best")
 
 ### Adding sidebar ###
-st.sidebar.markdown(f"*Last update: {sys.argv}*")
 add_sidebar = st.sidebar.radio("Select one of the options below:", ("Matches", "Tournaments"), horizontal=True)
 
 ### Loading and configuring data from pickle files ###
