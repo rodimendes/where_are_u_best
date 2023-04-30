@@ -12,7 +12,6 @@ import pandas as pd
 import pickle
 import mysql.connector
 from weather import current_weather
-import shutil
 
 
 load_dotenv()
@@ -79,14 +78,24 @@ def get_matches_info_to_dict(source_code):
             else:
                 player2.append(player['aria-label'])
         raw_score = tournament_matches.find_all("a", class_="tennis-match__match-link")
-        score_data = [score["title"] for score in raw_score]
+        score_data = []
+        for result in raw_score:
+            try:
+                score_data.append(result['title'])
+                print(result['title'])
+            except:
+                print('Passou!')
+                score_data.append("UNKNOWN")
         for match in score_data:
             raw_winner = match.split(" d ")[0].strip()
             if "]" in raw_winner:
                 winner.append(raw_winner.split("]")[1].strip())
             else:
                 winner.append(raw_winner.strip())
-            score.append(match.split(" ")[-1])
+            try:
+                score.append(match.split(" ")[-1])
+            except:
+                score.append("UNKNOWN")
 
     if len(player1) != 0:
         for city in city_list:
@@ -134,6 +143,7 @@ def get_matches_info_to_dict(source_code):
         "humidity": humidity,
     }
 
+    # print(match_dict)
     return match_dict
 
 
@@ -168,7 +178,6 @@ def to_dataframe(player_matches: dict):
             with open(f"matches/daily.pkl", "wb") as file:
                     pickle.dump(matches_df, file)
             print("Full dataset saved")
-            shutil.copy()
             return matches_df
 
 
@@ -217,4 +226,3 @@ source_code_to_test = get_source_code("https://www.wtatennis.com/scores")
 matches_dict = get_matches_info_to_dict(source_code_to_test)
 matches_df = to_dataframe(matches_dict)
 to_database(matches_df)
-current_weather()
