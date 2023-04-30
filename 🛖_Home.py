@@ -6,8 +6,8 @@ import plotly.express as px
 import pandas as pd
 import smtplib
 import os
+import datetime as dt
 from dotenv import load_dotenv
-import sys
 
 load_dotenv()
 
@@ -316,6 +316,13 @@ def all_tournaments(tournament_data, data_type):
 # st.title("🎾 Where are U best")
 
 ### Adding sidebar ###
+timestamp = dt.datetime.now().strftime("%H:%M")
+if timestamp > "23:00":
+    update_time = "11:00"
+else:
+    update_time = "23:00"
+
+st.sidebar.markdown(f"*Last update: {update_time}*")
 add_sidebar = st.sidebar.radio("Select one of the options below:", ("Matches", "Tournaments"), horizontal=True)
 
 ### Loading and configuring data from pickle files ###

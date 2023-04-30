@@ -12,6 +12,7 @@ import pandas as pd
 import pickle
 import mysql.connector
 from weather import current_weather
+import shutil
 
 
 load_dotenv()
@@ -167,6 +168,7 @@ def to_dataframe(player_matches: dict):
             with open(f"matches/daily.pkl", "wb") as file:
                     pickle.dump(matches_df, file)
             print("Full dataset saved")
+            shutil.copy()
             return matches_df
 
 
