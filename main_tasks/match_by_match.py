@@ -82,9 +82,7 @@ def get_matches_info_to_dict(source_code):
         for result in raw_score:
             try:
                 score_data.append(result['title'])
-                print(result['title'])
             except:
-                print('Passou!')
                 score_data.append("UNKNOWN")
         for match in score_data:
             raw_winner = match.split(" d ")[0].strip()
