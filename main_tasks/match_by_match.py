@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 import pandas as pd
 import pickle
 import mysql.connector
-from weather import current_weather
 
 
 load_dotenv()
@@ -218,9 +217,3 @@ def to_database(dataframe: pd.DataFrame):
                 cursor.execute(command, (player1, player2, tournament, city, country, winner,  score, date, temperature, humidity))
                 connection.commit()
         print("Data uploaded successfully")
-
-
-source_code_to_test = get_source_code("https://www.wtatennis.com/scores")
-matches_dict = get_matches_info_to_dict(source_code_to_test)
-matches_df = to_dataframe(matches_dict)
-to_database(matches_df)

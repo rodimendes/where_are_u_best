@@ -131,11 +131,3 @@ def get_data_from_db():
         content = cursor.fetchall()
 
     return content
-
-
-### Getting tournament list and loading database
-main_url = "https://www.wtatennis.com/tournaments"
-source_file = get_data_source(url=main_url)
-tournament_dict = get_tournaments_info_to_dict(source_file)
-tournament_df = to_dataframe(tournament_dict)
-to_database(tournament_df)

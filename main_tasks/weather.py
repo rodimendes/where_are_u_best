@@ -193,8 +193,3 @@ def to_database(weather: pd.DataFrame):
                 connection.commit()
         print("Weather data uploaded successfully")
     return
-
-
-weather_dict = weather_data()
-weather_df = to_dataframe(weather_dict)
-to_database(weather_df)
