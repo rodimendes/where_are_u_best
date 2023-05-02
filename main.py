@@ -34,5 +34,6 @@ try:
     match_by_match.to_database(matches_df)
     weather.current_weather()
     print("\033[92mMatches have been updated\033[0m")
-except:
+except Exception as e:
     print("\033[91mUpdate did not work properly.\033[0m")
+    print(e)
