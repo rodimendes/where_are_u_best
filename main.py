@@ -1,8 +1,18 @@
 from main_tasks import cities_coord, match_by_match, tournaments, weather
 import datetime as dt
+from time import sleep
 
 
 today = dt.datetime.today()
+
+def updating_matches():
+    source_code_to_test = match_by_match.get_source_code("https://www.wtatennis.com/scores")
+    matches_dict = match_by_match.get_matches_info_to_dict(source_code_to_test)
+    matches_df = match_by_match.to_dataframe(matches_dict)
+    match_by_match.to_database(matches_df)
+    weather.current_weather()
+    print("\033[92mMatches have been updated\033[0m")
+
 
 if today.weekday() == 6:
     try:
@@ -28,12 +38,10 @@ if today.weekday() == 6:
         print("\033[91mcities_coord not working.\033[0m")
 
 try:
-    source_code_to_test = match_by_match.get_source_code("https://www.wtatennis.com/scores")
-    matches_dict = match_by_match.get_matches_info_to_dict(source_code_to_test)
-    matches_df = match_by_match.to_dataframe(matches_dict)
-    match_by_match.to_database(matches_df)
-    weather.current_weather()
-    print("\033[92mMatches have been updated\033[0m")
+    updating_matches()
 except Exception as e:
     print("\033[91mUpdate did not work properly.\033[0m")
     print(e)
+    sleep(20)
+    print("\033[93mTrying to update one more time\033[0m")
+    updating_matches()
