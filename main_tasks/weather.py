@@ -1,5 +1,3 @@
-# TODO Consertar climate_forecast.pkl e checar se as previsões estão se repetindo
-
 import requests
 import pickle
 import os

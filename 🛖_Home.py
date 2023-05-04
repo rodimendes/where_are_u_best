@@ -37,14 +37,14 @@ def all_matches(matches_data, data_type):
     st.title(f"🎾 Where are U best - {choice}")
 
     if choice == "General":
-        st.markdown(f"#### View the `{data_type}` dataset sample.")
+        st.markdown(f"#### View the latest recorded `{data_type}`.")
         col01, col02, col03, col04, col05 = st.columns(5)
         col01.metric(label="Saved matches", value=len(matches_data))
         col02.metric(label="Total players", value=len(full_players_list))
         col03.metric(label="Total tournaments", value=len(matches_data["Tournament"].unique()))
         col04.metric(label="Total cities", value=len(matches_data["City"].unique()))
         col05.metric(label="Total countries", value=len(matches_data["Country"].unique()))
-        st.dataframe(matches_data.sample(8), height=DATAFRAME_HEIGHT_LARGE)
+        st.dataframe(matches_data.tail(8), height=DATAFRAME_HEIGHT_LARGE)
 
     if choice == "Players":
         player_select = st.sidebar.selectbox("Pick a player:", full_players_list)
