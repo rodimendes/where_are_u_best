@@ -296,11 +296,13 @@ def all_matches(matches_data, data_type, current_weather):
         player_cod = df_to_predict.at[player, "p1_cod"]
         temp = current_weather.at[city, "Temperature"]
         humid = current_weather.at[city, "Humidity"]
-        
+        matches_played = df_to_predict.at[player, "matches_played"]
+        win_ratio = df_to_predict.at[player, "win_ratio"]
+        win_points = df_to_predict.at[player, "win_points"]
         st.write(player_cod)
 
-        predict = rf_model.predict_proba([[temp, humid, player_cod, ]])
-
+        predict = rf_model.predict_proba([[temp, humid, player_cod, matches_played, win_ratio, win_points]])
+        st.markdown(predict)
 
 def all_tournaments(tournament_data, data_type):
     """
