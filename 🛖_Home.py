@@ -6,7 +6,6 @@ import plotly.express as px
 import pandas as pd
 import smtplib
 import os
-import datetime as dt
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -28,8 +27,8 @@ st.set_page_config(
     layout="centered",
 )
 
-def all_matches(matches_data, data_type):
-    choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Country", "H2H"], horizontal=True, help="For some options below, new filters are available.")
+def all_matches(matches_data, data_type, current_weather):
+    choice = st.sidebar.radio("Filter data by:", options=["General", "Players", "Winners", "Country", "H2H", "Matches Forecast"], horizontal=True, help="For some options below, new filters are available.")
     players1 = matches_data["Player 1"].unique()
     players2 = matches_data["Player 2"].unique()
     full_players_list = sorted(list(set(players1) | set(players2)))
@@ -46,7 +45,7 @@ def all_matches(matches_data, data_type):
         col05.metric(label="Total countries", value=len(matches_data["Country"].unique()))
         st.dataframe(matches_data.tail(8), height=DATAFRAME_HEIGHT_LARGE)
 
-    if choice == "Players":
+    elif choice == "Players":
         player_select = st.sidebar.selectbox("Pick a player:", full_players_list)
         st.write(f"You choose **{player_select}**")
         player_df = matches_data[(matches_data['Player 1'] == player_select) | (matches_data['Player 2'] == player_select)]
@@ -289,6 +288,18 @@ def all_matches(matches_data, data_type):
         fig_temp.update_xaxes(range=[0, 40])
         fig_temp.update_yaxes(range=[0, 30])
         st.plotly_chart(fig_temp)
+    elif choice == "Matches Forecast":
+        df_to_predict = pd.read_pickle("ml_models/df_to_predict.pkl")
+        rf_model = pd.read_pickle("ml_models/rf_model.pkl")
+        player = st.selectbox("Choose the player:", df_to_predict.index)
+        city = st.selectbox("Select a city:", current_weather.index)
+        player_cod = df_to_predict.at[player, "p1_cod"]
+        temp = current_weather.at[city, "Temperature"]
+        humid = current_weather.at[city, "Humidity"]
+        
+        st.write(player_cod)
+
+        predict = rf_model.predict_proba([[temp, humid, player_cod, ]])
 
 
 def all_tournaments(tournament_data, data_type):
@@ -325,19 +336,20 @@ matches.index += 1
 tournaments = pd.read_pickle("tournaments_files/tournaments.pkl")
 tournaments.columns = ["Name", "City", "Country", "Surface", "Start", "End", "Year"]
 tournaments.index += 1
+weather_data = pd.read_pickle("weather_files/current_weather.pkl")
+weather_data.columns = ["City", "Temperature", "Humidity"]
+weather_data.set_index("City", inplace=True)
+
 
 ### Showing data according to selection ###
 if add_sidebar == "Matches":
-    all_matches(matches_data=matches, data_type=add_sidebar)
+    all_matches(matches_data=matches, data_type=add_sidebar, current_weather=weather_data)
 
 
 if add_sidebar == "Tournaments":
     all_tournaments(tournament_data=tournaments, data_type=add_sidebar)
 
 st.sidebar.write("---")
-weather_data = pd.read_pickle("weather_files/current_weather.pkl")
-weather_data.columns = ["City", "Temperature", "Humidity"]
-weather_data.set_index("City", inplace=True)
 st.sidebar.markdown("#### Cities with active tournament and current weather conditions:")
 st.sidebar.dataframe(weather_data)
 
