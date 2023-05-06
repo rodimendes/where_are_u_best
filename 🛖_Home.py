@@ -318,13 +318,11 @@ def all_matches(matches_data, data_type, current_weather):
 
         dataframe = pd.DataFrame([win_proba_1, win_proba_2], index=[player1, player2], columns=["win_proba"])
 
-        st.dataframe(dataframe)
-        fig = px.bar(dataframe, x="win_proba", color=dataframe.index, text_auto=True)
+        fig = px.bar(dataframe, y="win_proba", color=dataframe.index, text_auto=True)
         fig.update_layout(title_text=f"Win probability - {player1} vs {player2}",
-                           yaxis_title="Players",
-                           xaxis_title="Probability (%)",
-                           width=PX_WIDTH,
-                           height=PX_HEIGHT,
+                           yaxis_title="Probability (%)",
+                           xaxis_title="Players",
+                           showlegend=False
                            )
         st.plotly_chart(fig)
 
