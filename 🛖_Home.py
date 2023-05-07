@@ -294,6 +294,7 @@ def all_matches(matches_data, data_type, current_weather):
         player1 = st.selectbox("Choose the player 1:", df_to_predict.index)
         player2 = st.selectbox("Choose the player 2:", df_to_predict.index)
         city = st.selectbox("Select a city:", current_weather.index)
+        st.markdown("*For best results check in at least two hours before the start of the match*")
         player1_cod = df_to_predict.at[player1, "p1_cod"]
         player2_cod = df_to_predict.at[player2, "p1_cod"]
         temp = current_weather.at[city, "Temperature"]
@@ -319,10 +320,14 @@ def all_matches(matches_data, data_type, current_weather):
         dataframe = pd.DataFrame([win_proba_1, win_proba_2], index=[player1, player2], columns=["win_proba"])
 
         fig = px.bar(dataframe, y="win_proba", color=dataframe.index, text_auto=True)
-        fig.update_layout(title_text=f"Win probability - {player1} vs {player2}",
-                           yaxis_title="Probability (%)",
-                           xaxis_title="Players",
-                           showlegend=False
+        fig.update_layout(
+                    title_text=f"Win probability - {player1} vs {player2}",
+                    yaxis_title="Probability (%)",
+                    xaxis_title="Players",
+                    showlegend=False,
+                    font={
+                        "size": 20
+                    }
                            )
         st.plotly_chart(fig)
 
