@@ -14,7 +14,7 @@ def current_weather():
     with open("tournaments_files/tournaments.pkl", 'rb') as file:
         lista = pickle.load(file)
 
-    today = dt.datetime.today()
+    today = dt.datetime.today().date()
     full_start_dt = lista.start_date + ' ' + lista.year
     full_end_dt = lista.end_date + ' ' + lista.year
 
@@ -24,7 +24,7 @@ def current_weather():
     for pos, row in lista.iterrows():
         end_date = dt.datetime.strptime(full_end_dt[pos], '%b %d %Y')
         start_date = dt.datetime.strptime(full_start_dt[pos], '%b %d %Y')
-        if start_date <= today and end_date >= today: # Look at the tournament official starting date
+        if start_date.date() <= today and end_date.date() >= today: # Look at the tournament official starting date
             cities.append(row.city)
             coord_params = {
                     "appid": api_key,
@@ -191,3 +191,5 @@ def to_database(weather: pd.DataFrame):
                 connection.commit()
         print("Weather data uploaded successfully")
     return
+
+current_weather()
