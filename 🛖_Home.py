@@ -293,43 +293,48 @@ def all_matches(matches_data, data_type, current_weather):
         rf_model = pd.read_pickle("ml_models/rf_model.pkl")
         player1 = st.selectbox("Choose the player 1:", df_to_predict.index)
         player2 = st.selectbox("Choose the player 2:", df_to_predict.index)
-        city = st.selectbox("Select a city:", current_weather.index)
-        st.markdown("*For best results check in at least two hours before the start of the match*")
-        player1_cod = df_to_predict.at[player1, "p1_cod"]
-        player2_cod = df_to_predict.at[player2, "p1_cod"]
-        temp = current_weather.at[city, "Temperature"]
-        humid = current_weather.at[city, "Humidity"]
-        matches_played_p1 = df_to_predict.at[player1, "matches_played"]
-        matches_played_p2 = df_to_predict.at[player2, "matches_played"]
-        win_ratio_p1 = df_to_predict.at[player1, "win_ratio"]
-        win_points_p1 = df_to_predict.at[player1, "win_points"]
-        win_ratio_p2 = df_to_predict.at[player2, "win_ratio"]
-        win_points_p2 = df_to_predict.at[player2, "win_points"]
+        if len(current_weather) != 0:
+            city = st.selectbox("Select a city:", current_weather.index)
+            st.markdown("*For best results check in at least two hours before the start of the match*")
+            player1_cod = df_to_predict.at[player1, "p1_cod"]
+            player2_cod = df_to_predict.at[player2, "p1_cod"]
+            temp = current_weather.at[city, "Temperature"]
+            humid = current_weather.at[city, "Humidity"]
+            matches_played_p1 = df_to_predict.at[player1, "matches_played"]
+            matches_played_p2 = df_to_predict.at[player2, "matches_played"]
+            win_ratio_p1 = df_to_predict.at[player1, "win_ratio"]
+            win_points_p1 = df_to_predict.at[player1, "win_points"]
+            win_ratio_p2 = df_to_predict.at[player2, "win_ratio"]
+            win_points_p2 = df_to_predict.at[player2, "win_points"]
 
-        predict_p1 = rf_model.predict_proba([[temp, humid, player1_cod, matches_played_p1, win_ratio_p1, win_points_p1]])
-        predict_p2 = rf_model.predict_proba([[temp, humid, player2_cod, matches_played_p2, win_ratio_p2, win_points_p2]])
+            predict_p1 = rf_model.predict_proba([[temp, humid, player1_cod, matches_played_p1, win_ratio_p1, win_points_p1]])
+            predict_p2 = rf_model.predict_proba([[temp, humid, player2_cod, matches_played_p2, win_ratio_p2, win_points_p2]])
 
-        p1_prob_loss = round(predict_p1[0][0], ndigits=2)
-        p1_prob_win = round(predict_p1[0][1], ndigits=2)
-        p2_prob_loss = round(predict_p2[0][0], ndigits=2)
-        p2_prob_win = round(predict_p2[0][1], ndigits=2)
+            p1_prob_loss = round(predict_p1[0][0], ndigits=2)
+            p1_prob_win = round(predict_p1[0][1], ndigits=2)
+            p2_prob_loss = round(predict_p2[0][0], ndigits=2)
+            p2_prob_win = round(predict_p2[0][1], ndigits=2)
 
-        win_proba_1 = round((p1_prob_win + p2_prob_loss) / 2, ndigits=2) * 100
-        win_proba_2 = round((p2_prob_win + p1_prob_loss) / 2, ndigits=2) * 100
+            win_proba_1 = round((p1_prob_win + p2_prob_loss) / 2, ndigits=2) * 100
+            win_proba_2 = round((p2_prob_win + p1_prob_loss) / 2, ndigits=2) * 100
 
-        dataframe = pd.DataFrame([win_proba_1, win_proba_2], index=[player1, player2], columns=["win_proba"])
+            dataframe = pd.DataFrame([win_proba_1, win_proba_2], index=[player1, player2], columns=["win_proba"])
 
-        fig = px.bar(dataframe, y="win_proba", color=dataframe.index, text_auto=True)
-        fig.update_layout(
-                    title_text=f"Win probability - {player1} vs {player2}",
-                    yaxis_title="Probability (%)",
-                    xaxis_title="Players",
-                    showlegend=False,
-                    font={
-                        "size": 20
-                    }
-                           )
-        st.plotly_chart(fig)
+            fig = px.bar(dataframe, y="win_proba", color=dataframe.index, text_auto=True)
+            fig.update_layout(
+                        title_text=f"Win probability - {player1} vs {player2}",
+                        yaxis_title="Probability (%)",
+                        xaxis_title="Players",
+                        showlegend=False,
+                        font={
+                            "size": 20
+                        }
+                            )
+            st.plotly_chart(fig)
+        else:
+            col1, col2, col3 = st.columns([45, 100, 1])
+
+            col2.markdown("**There are no tournaments being played.**")
 
 def all_tournaments(tournament_data, data_type):
     """
