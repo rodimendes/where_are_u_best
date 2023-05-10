@@ -295,7 +295,7 @@ def all_matches(matches_data, data_type, current_weather):
         player2 = st.selectbox("Choose the player 2:", df_to_predict.index)
         if len(current_weather) != 0:
             city = st.selectbox("Select a city:", current_weather.index)
-            st.markdown("*For best results check in at least two hours before the start of the match*")
+            st.markdown("*For best results, try it up to **two hours** before the start of the match*")
             player1_cod = df_to_predict.at[player1, "p1_cod"]
             player2_cod = df_to_predict.at[player2, "p1_cod"]
             temp = current_weather.at[city, "Temperature"]
