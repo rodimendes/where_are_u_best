@@ -1,7 +1,13 @@
 from main_tasks import cities_coord, match_by_match, tournaments, weather
 import datetime as dt
 from time import sleep
+import smtplib
+import os
 
+
+DEPARTURE_MAIL = os.environ.get("DEPARTURE_MAIL")
+PASS_DEPART_MAIL = os.environ.get("PASS_DEPART_MAIL")
+ARRIVAL_MAIL = os.environ.get("ARRIVAL_MAIL")
 
 today = dt.datetime.today()
 
@@ -44,4 +50,11 @@ except Exception as e:
     print(e)
     sleep(20)
     print("\033[93mTrying to update one more time\033[0m")
-    updating_matches()
+    try:
+        updating_matches()
+    except:
+        email_message = f"Subject:🚨The update process is not working well.🚨\n\nCheck the update process as soon as posible to fix bugs."
+        with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+            connection.starttls()
+            connection.login(DEPARTURE_MAIL, PASS_DEPART_MAIL)
+            connection.sendmail(from_addr=DEPARTURE_MAIL, to_addrs=ARRIVAL_MAIL, msg=email_message.encode('utf-8'))
