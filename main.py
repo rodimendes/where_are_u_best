@@ -10,6 +10,7 @@ PASS_DEPART_MAIL = os.environ.get("PASS_DEPART_MAIL")
 ARRIVAL_MAIL = os.environ.get("ARRIVAL_MAIL")
 
 today = dt.datetime.today()
+hour = dt.datetime.now().time()
 
 def updating_matches():
     source_code_to_test = match_by_match.get_source_code("https://www.wtatennis.com/scores")
@@ -20,7 +21,7 @@ def updating_matches():
     print("\033[92mMatches have been updated\033[0m")
 
 
-if today.weekday() == 6:
+if (today.weekday() == 6) and ("12:00" < str(hour) < "14:00"):
     try:
         tournaments_url = "https://www.wtatennis.com/tournaments"
         tournament_source_file = tournaments.get_data_source(tournaments_url)
