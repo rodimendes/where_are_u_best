@@ -60,13 +60,15 @@ def get_matches_info_to_dict(source_code):
     winner = []
     temperature = []
     humidity = []
-    for tournament in raw_tournament_data:
-        tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"})
-        name = tournament["data-ui-title"]
-        raw_city = tournament["data-ui-subtitle"]
-        city_and_country = raw_city.split(",")
-        city = city_and_country[0].strip().title()
-        country = city_and_country[1].strip().title()
+    for tournament in raw_tournament_data[:2]:
+        tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"}) # FIND HERE THE DATA TO RG
+        # print(tournament_matches)
+        # print()
+        name = tournament["data-ui-title"] # OK
+        raw_city = tournament["data-ui-subtitle"] # OK
+        city_and_country = raw_city.split(",") # OK
+        city = city_and_country[0].strip().title() # OK
+        country = city_and_country[1].strip().title() # OK
         players = tournament_matches.find_all("a", class_="match-table__player match-table__player--link")
         for pos, player in enumerate(players):
             if pos % 2 == 0:
