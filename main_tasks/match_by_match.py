@@ -60,13 +60,13 @@ def get_matches_info_to_dict(source_code):
     winner = []
     temperature = []
     humidity = []
-    for tournament in raw_tournament_data[-1:]: #[:2]
-        tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"}) # FIND HERE THE DATA TO RG
-        name = tournament["data-ui-title"] # OK
-        raw_city = tournament["data-ui-subtitle"] # OK
-        city_and_country = raw_city.split(",") # OK
-        city = city_and_country[0].strip().title() # OK
-        country = city_and_country[1].strip().title() # OK
+    for tournament in raw_tournament_data: #[:2]
+        tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"})
+        name = tournament["data-ui-title"]
+        raw_city = tournament["data-ui-subtitle"]
+        city_and_country = raw_city.split(",")
+        city = city_and_country[0].strip().title()
+        country = city_and_country[1].strip().title()
 
         players = tournament_matches.find_all("a", class_="match-table__player match-table__player--link")
         if len(players) == 0:
@@ -97,69 +97,75 @@ def get_matches_info_to_dict(source_code):
         for result in raw_score:
             try:
                 score_data.append(result['title'])
-
             except:
                 score_data.append("UNKNOWN")
         for match in score_data:
-            raw_winner = match.split(" d ")[0].strip()
-            print(raw_winner)
-    #         if "]" in raw_winner:
-    #             winner.append(raw_winner.split("]")[1].strip())
-    #         else:
-    #             winner.append(raw_winner.strip())
-    #         try:
-    #             score.append(match.split(" ")[-1])
-    #         except:
-    #             score.append("UNKNOWN")
+            if "/" in match:
+                raw_winner = match.split(" d ")[0].strip().split(" /")[0].strip()
+                winner.append(raw_winner)
+                try:
+                    score.append(match.split("/")[-1].strip())
+                except:
+                    score.append("UNKNOWN")
+            else:
+                raw_winner = match.split(" d ")[0].strip()
+                if "]" in raw_winner:
+                    winner.append(raw_winner.split("]")[1].strip())
+                else:
+                    winner.append(raw_winner.strip())
+                try:
+                    score.append(match.split(" ")[-1])
+                except:
+                    score.append("UNKNOWN")
 
-    # if len(player1) != 0:
-    #     for city in city_list:
-    #         coord_params = {
-    #             "appid": api_key,
-    #             "q": city,
-    #             "limit": 1,
-    #             }
-    #             # Getting latitude and longitude
-    #         coord_url = f"http://api.openweathermap.org/geo/1.0/direct"
-    #         coord_response = requests.get(coord_url, params=coord_params)
-    #         coord_response.raise_for_status() # returns an HTTPError object if an error has occurred during the process. It is used for debugging the requests module.
-    #         lat = coord_response.json()[0]['lat']
-    #         long = coord_response.json()[0]['lon']
+    if len(player1) != 0:
+        for city in city_list:
+            coord_params = {
+                "appid": api_key,
+                "q": city,
+                "limit": 1,
+                }
+                # Getting latitude and longitude
+            coord_url = f"http://api.openweathermap.org/geo/1.0/direct"
+            coord_response = requests.get(coord_url, params=coord_params)
+            coord_response.raise_for_status() # returns an HTTPError object if an error has occurred during the process. It is used for debugging the requests module.
+            lat = coord_response.json()[0]['lat']
+            long = coord_response.json()[0]['lon']
 
-    #         # Getting current temperature and humidity
-    #         parameters = {
-    #                 "appid": api_key,
-    #                 "units": "metric",
-    #                 "lat": lat,
-    #                 "lon": long,
-    #                 "exclude": "minutely, hourly, alerts, daily"
-    #                 }
+            # Getting current temperature and humidity
+            parameters = {
+                    "appid": api_key,
+                    "units": "metric",
+                    "lat": lat,
+                    "lon": long,
+                    "exclude": "minutely, hourly, alerts, daily"
+                    }
 
-    #         endpoint = f"https://api.openweathermap.org/data/2.5/onecall"
+            endpoint = f"https://api.openweathermap.org/data/2.5/onecall"
 
-    #         response = requests.get(endpoint, params=parameters)
-    #         response.raise_for_status
-    #         weather_data = response.json()
-    #         temperature.append(weather_data['current']['feels_like'])
-    #         humidity.append(weather_data['current']['humidity'])
-    # else:
-    #     print("No one match completed so far.")
+            response = requests.get(endpoint, params=parameters)
+            response.raise_for_status
+            weather_data = response.json()
+            temperature.append(weather_data['current']['feels_like'])
+            humidity.append(weather_data['current']['humidity'])
+    else:
+        print("No one match completed so far.")
 
-    # match_dict = {
-    #     "player1": player1,
-    #     "player2": player2,
-    #     "tournament": tournament_name_list,
-    #     "city": city_list,
-    #     "country": country_list,
-    #     "winner": winner,
-    #     "score": score,
-    #     "date": today,
-    #     "temperature": temperature,
-    #     "humidity": humidity,
-    # }
+    match_dict = {
+        "player1": player1,
+        "player2": player2,
+        "tournament": tournament_name_list,
+        "city": city_list,
+        "country": country_list,
+        "winner": winner,
+        "score": score,
+        "date": today,
+        "temperature": temperature,
+        "humidity": humidity,
+    }
 
-    # # print(match_dict)
-    # return match_dict
+    # print(match_dict)
+    return match_dict
 
 
 def to_dataframe(player_matches: dict):
