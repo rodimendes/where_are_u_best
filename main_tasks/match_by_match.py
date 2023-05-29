@@ -60,7 +60,7 @@ def get_matches_info_to_dict(source_code):
     winner = []
     temperature = []
     humidity = []
-    for tournament in raw_tournament_data: #[:2]
+    for tournament in raw_tournament_data:
         tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"})
         name = tournament["data-ui-title"]
         raw_city = tournament["data-ui-subtitle"]
@@ -185,8 +185,9 @@ def to_dataframe(player_matches: dict):
                 with open("matches/daily.pkl", "rb") as file:
                     old_data = pickle.load(file)
                 reunited_data = pd.concat([old_data, matches_df], ignore_index=True)
+                reunited_data = sanitizing(reunited_data)
                 full_data = pd.concat([reunited_data, old_data], ignore_index=True)
-                print("Dropping duplicated data")
+                full_data = sanitizing(full_data)
                 new_data = full_data.drop_duplicates(subset=['player1', 'player2', 'city'], keep=False, ignore_index=True)
                 if new_data.shape[0] == 0:
                     print("Nothing to save")
@@ -241,3 +242,36 @@ def to_database(dataframe: pd.DataFrame):
                 cursor.execute(command, (player1, player2, tournament, city, country, winner,  score, date, temperature, humidity))
                 connection.commit()
         print("Data uploaded successfully")
+
+
+def sanitizing(dataframe: pd.DataFrame):
+    without_dot = [player for player in dataframe['player1'].unique() if "." not in player]
+
+    without_dot2 = [player for player in dataframe['player2'].unique() if "." not in player]
+
+    without_dot.extend(without_dot2)
+
+    without_dot = list(set(without_dot))
+
+    for pos, to_replace in enumerate(dataframe['player1']):
+        if '.' in to_replace:
+            for player in without_dot:
+                if to_replace[-5:] in player and to_replace[0] == player[0]:
+                    # print(to_replace.replace(to_replace, player))
+                    dataframe.at[pos, 'player1'] = player
+
+    for pos, to_replace in enumerate(dataframe['player2']):
+        if '.' in to_replace:
+            for player in without_dot:
+                if to_replace[-5:] in player and to_replace[0] == player[0]:
+                    # print(to_replace.replace(to_replace, player))
+                    dataframe.at[pos, 'player2'] = player
+
+    for pos, to_replace in enumerate(dataframe['winner']):
+        if '.' in to_replace:
+            for player in without_dot:
+                if to_replace[-5:] in player and to_replace[0] == player[0]:
+                    # print(to_replace.replace(to_replace, player))
+                    dataframe.at[pos, 'winner'] = player
+
+    return dataframe
