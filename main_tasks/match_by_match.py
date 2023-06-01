@@ -256,21 +256,21 @@ def sanitizing(dataframe: pd.DataFrame):
     for pos, to_replace in enumerate(dataframe['player1']):
         if '.' in to_replace:
             for player in without_dot:
-                if to_replace[-5:] in player and to_replace[0] == player[0]:
+                if to_replace[-7:] in player and to_replace[0] == player[0]:
                     # print(to_replace.replace(to_replace, player))
                     dataframe.at[pos, 'player1'] = player
 
     for pos, to_replace in enumerate(dataframe['player2']):
         if '.' in to_replace:
             for player in without_dot:
-                if to_replace[-5:] in player and to_replace[0] == player[0]:
+                if to_replace[-7:] in player and to_replace[0] == player[0]:
                     # print(to_replace.replace(to_replace, player))
                     dataframe.at[pos, 'player2'] = player
 
     for pos, to_replace in enumerate(dataframe['winner']):
         if '.' in to_replace:
             for player in without_dot:
-                if to_replace[-5:] in player and to_replace[0] == player[0]:
+                if to_replace[-7:] in player and to_replace[0] == player[0]:
                     # print(to_replace.replace(to_replace, player))
                     dataframe.at[pos, 'winner'] = player
 
