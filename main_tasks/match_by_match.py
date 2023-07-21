@@ -270,5 +270,5 @@ def sanitizing(dataframe: pd.DataFrame):
             for player in without_dot:
                 if to_replace.split()[-1] == player.split()[-1] and to_replace[0] == player[0]:
                     dataframe.at[pos, 'winner'] = player
-                
+
     return dataframe
