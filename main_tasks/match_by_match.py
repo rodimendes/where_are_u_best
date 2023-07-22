@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.core.utils import ChromeType
 from selenium.webdriver.common.by import By
 import time
 import datetime as dt
@@ -22,12 +23,9 @@ def get_source_code(url):
     Gets the source code and saves it for further verifications.
     The function returns the path to 'html' file and the player name.
     """
-    service = Service(ChromeDriverManager().install())
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless') #### Without window
-    # chrome_options.add_argument('--start-maximized') #####
-    # chrome_options.add_experimental_option('detach', True) #### Keep the window opened
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
     driver.get(url)
 
     driver.find_element(By.XPATH, '//*[@id="js-cookie-notice"]/div/div/div/div/button[2]').click()
