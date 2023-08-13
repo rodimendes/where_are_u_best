@@ -24,7 +24,8 @@ def current_weather():
     for pos, row in lista.iterrows():
         end_date = dt.datetime.strptime(full_end_dt[pos], '%b %d %Y')
         start_date = dt.datetime.strptime(full_start_dt[pos], '%b %d %Y')
-        if start_date.date() <= today and end_date.date() >= today: # Look at the tournament official starting date
+        if start_date.date() <= today and end_date.date() >= today:
+        # Look at the tournament official starting date
             cities.append(row.city)
             coord_params = {
                     "appid": api_key,

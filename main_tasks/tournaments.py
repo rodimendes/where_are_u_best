@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.core.utils import ChromeType
 import mysql.connector
 import pandas as pd
 import pickle
@@ -13,9 +14,9 @@ def get_data_source(url):
     Gets the source code and saves it for further verifications.
     The function returns the path to 'html' file and the player name.
     """
-    service = Service(ChromeDriverManager().install())
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless')
+    service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get(url)
     with open(f"tournaments_files/tournaments_list.html", "w") as file:
@@ -30,7 +31,6 @@ def get_tournaments_info_to_dict(html_file):
     with open(html_file, 'r') as raw_file:
         soup = BeautifulSoup(raw_file, 'html.parser')
     active_tournaments = soup.find_all('div', class_='is-active-month')
-    print(active_tournaments)
     for tournament in active_tournaments:
         raw_names = tournament.find_all('h3', class_='tournament-thumbnail__title')
         names = [name.text.strip() for name in raw_names]
@@ -40,7 +40,7 @@ def get_tournaments_info_to_dict(html_file):
         year = [date.text.split(',')[1].strip() for pos, date in enumerate(raw_dates) if pos % 2 == 1]
         raw_location = tournament.find_all('span', class_='tournament-thumbnail__location')
         cities = [city.text.split(',')[0].strip().title() for city in raw_location]
-        countries = [country.text.split(',')[1].strip().title() for country in raw_location]
+        countries = [country.text.split(',')[-1].strip().title() for country in raw_location]
         raw_surface = tournament.find_all('span', class_='tournament-tag')
         surfaces = [surface.text.strip() for surface in raw_surface]
 
@@ -53,7 +53,6 @@ def get_tournaments_info_to_dict(html_file):
         'end_date': end_date,
         'year': year
     }
-    print()
 
     return tournaments_dict
 
@@ -133,3 +132,7 @@ def get_data_from_db():
         content = cursor.fetchall()
 
     return content
+
+
+tournaments_dict = get_tournaments_info_to_dict("tournaments_files/tournaments_list.html")
+to_dataframe(tournaments_dict)
