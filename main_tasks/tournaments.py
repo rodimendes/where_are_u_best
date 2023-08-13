@@ -30,6 +30,7 @@ def get_tournaments_info_to_dict(html_file):
     with open(html_file, 'r') as raw_file:
         soup = BeautifulSoup(raw_file, 'html.parser')
     active_tournaments = soup.find_all('div', class_='is-active-month')
+    print(active_tournaments)
     for tournament in active_tournaments:
         raw_names = tournament.find_all('h3', class_='tournament-thumbnail__title')
         names = [name.text.strip() for name in raw_names]
@@ -52,6 +53,7 @@ def get_tournaments_info_to_dict(html_file):
         'end_date': end_date,
         'year': year
     }
+    print()
 
     return tournaments_dict
 
