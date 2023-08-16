@@ -64,7 +64,7 @@ def get_matches_info_to_dict(source_code):
         raw_city = tournament["data-ui-subtitle"]
         city_and_country = raw_city.split(",")
         city = city_and_country[0].strip().title()
-        country = city_and_country[1].strip().title()
+        country = city_and_country[-1].strip().title()
 
         players = tournament_matches.find_all("a", class_="match-table__player match-table__player--link")
         if len(players) == 0:
