@@ -13,7 +13,6 @@ import pandas as pd
 import pickle
 import mysql.connector
 
-
 load_dotenv()
 api_key = os.environ.get("OPENWEATHER_KEY")
 
@@ -23,8 +22,15 @@ def get_source_code(url):
     Gets the source code and saves it for further verifications.
     The function returns the path to 'html' file and the player name.
     """
+
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless') #### Without window
+    # chrome_options.binary_location = "/Users/rodrigocamila/`Learning coding`/Portfolio_projects/where_are_u_best/chromedriver/mac-116.0.5793.0/chromedriver-mac-x64/chromedriver"
+
+
+    # service = Service(ChromeDriverManager(path="/Users/rodrigocamila/Learning coding/Portfolio_projects/where_are_u_best/chromedriver/mac-116.0.5793.0/chromedriver-mac-x64/chromedriver").install())
+    # driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
+
     driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
     driver.get(url)
 
