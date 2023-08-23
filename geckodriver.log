@@ -1,0 +1,49 @@
+1692827203770	geckodriver	INFO	Listening on 127.0.0.1:56534
+1692827204132	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/k0/cq83jz1x4m5_dpcmmv8ldww00000gp/T/rust_mozprofilejBeD5F"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1692827205202	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1692827205574	Marionette	INFO	Listening on port 56542
+Read port: 56542
+WebDriver BiDi listening on ws://127.0.0.1:56535
+1692827206329	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:56535/devtools/browser/fef62008-0289-4fa2-9faa-72c9813228d9
+JavaScript warning: https://pagead2.googlesyndication.com/bg/-jd_BcJ2_muHebna6aM-t4BwAJqN83NnF3hDm83RPZ4.js line 2 > eval line 1385 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1692827213745	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1692827225546	Marionette	INFO	Stopped listening on port 56542
+1692828051027	geckodriver	INFO	Listening on 127.0.0.1:56822
+1692828051394	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/k0/cq83jz1x4m5_dpcmmv8ldww00000gp/T/rust_mozprofile43qX7e"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1692828052366	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1692828052754	Marionette	INFO	Listening on port 56830
+Read port: 56830
+WebDriver BiDi listening on ws://127.0.0.1:56823
+1692828053412	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:56823/devtools/browser/48afd5d3-5cb8-4bc5-a193-58d32f14301d
+JavaScript warning: https://pagead2.googlesyndication.com/bg/-jd_BcJ2_muHebna6aM-t4BwAJqN83NnF3hDm83RPZ4.js line 2 > eval line 1782 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1692828071972	Marionette	INFO	Stopped listening on port 56830
+1692828413759	geckodriver	INFO	Listening on 127.0.0.1:57035
+1692828414125	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/k0/cq83jz1x4m5_dpcmmv8ldww00000gp/T/rust_mozprofileR3DOoU"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1692828414645	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1692828415032	Marionette	INFO	Listening on port 57043
+Read port: 57043
+WebDriver BiDi listening on ws://127.0.0.1:57036
+1692828415633	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:57036/devtools/browser/4be8f48f-91a3-4052-a63c-98091d3e3e7b
+JavaScript warning: https://pagead2.googlesyndication.com/bg/-jd_BcJ2_muHebna6aM-t4BwAJqN83NnF3hDm83RPZ4.js line 2 > eval line 5548 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/aZrQl3reHFLrXxIU5jTX67bfpJTGr0dfi-1qyyEVSZQ.js line 2 > eval line 1729 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1692828432353	Marionette	INFO	Stopped listening on port 57043
+JavaScript warning: https://script.hotjar.com/modules.14b820ab47d618317075.js, line 2: Script terminated by timeout at:
+t<@https://script.hotjar.com/modules.14b820ab47d618317075.js:2:42043
+
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
