@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.core.utils import ChromeType
 from selenium.webdriver.common.by import By
@@ -25,13 +26,14 @@ def get_source_code(url):
 
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless') #### Without window
-    # chrome_options.binary_location = "/Users/rodrigocamila/`Learning coding`/Portfolio_projects/where_are_u_best/chromedriver/mac-116.0.5793.0/chromedriver-mac-x64/chromedriver"
 
-
+    firefox_options = webdriver.FirefoxOptions()
+    firefox_options.add_argument("--headless")
+    service = Service(GeckoDriverManager.install())
     # service = Service(ChromeDriverManager(path="/Users/rodrigocamila/Learning coding/Portfolio_projects/where_are_u_best/chromedriver/mac-116.0.5793.0/chromedriver-mac-x64/chromedriver").install())
     # driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM, version="114.0.5735.90").install()), options=chrome_options)
     driver.get(url)
 
     driver.find_element(By.XPATH, '//*[@id="js-cookie-notice"]/div/div/div/div/button[2]').click()
