@@ -47,3 +47,21 @@ t<@https://script.hotjar.com/modules.14b820ab47d618317075.js:2:42043
 JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
 JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
 JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1692831616237	geckodriver	INFO	Listening on 127.0.0.1:57258
+1692831616755	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... debugging-port" "57259" "--remote-allow-hosts" "localhost" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofileY6wqeV"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1692831617190	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1692831617549	Marionette	INFO	Listening on port 57266
+Read port: 57266
+WebDriver BiDi listening on ws://127.0.0.1:57259
+1692831618240	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:57259/devtools/browser/0b9b7698-cea3-484e-a745-79fb755610bb
+JavaScript warning: https://pagead2.googlesyndication.com/bg/-jd_BcJ2_muHebna6aM-t4BwAJqN83NnF3hDm83RPZ4.js line 2 > eval line 5919 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1692831635548	Marionette	INFO	Stopped listening on port 57266
+JavaScript warning: https://script.hotjar.com/modules.14b820ab47d618317075.js, line 2: Script terminated by timeout at:
+t<@https://script.hotjar.com/modules.14b820ab47d618317075.js:2:42043
+
