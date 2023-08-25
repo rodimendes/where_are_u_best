@@ -139,3 +139,45 @@ JavaScript warning: https://pagead2.googlesyndication.com/bg/PkiGnUWInYwTcBYaxbS
 JavaScript warning: https://script.hotjar.com/modules.14b820ab47d618317075.js, line 2: Script terminated by timeout at:
 t<@https://script.hotjar.com/modules.14b820ab47d618317075.js:2:42046
 
+1692961219771	geckodriver	INFO	Listening on 127.0.0.1:49694
+1692961220284	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... debugging-port" "49695" "--remote-allow-hosts" "localhost" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofileECjXsY"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1692961220895	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1692961221736	Marionette	INFO	Listening on port 49702
+Read port: 49702
+WebDriver BiDi listening on ws://127.0.0.1:49695
+1692961222577	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:49695/devtools/browser/de962969-ec4b-49d1-b788-401d3944106f
+JavaScript warning: https://pagead2.googlesyndication.com/bg/53FW8zYQTkJ6aaIrXR-nTnykNiqudoH54JKD_I7-wfM.js line 2 > eval line 4505 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/53FW8zYQTkJ6aaIrXR-nTnykNiqudoH54JKD_I7-wfM.js line 2 > eval line 1938 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1692961240921	Marionette	INFO	Stopped listening on port 49702
+JavaScript warning: https://s0.2mdn.net/879366/Enabler_01_250.js, line 117: Script terminated by timeout at:
+Cg.prototype.B@https://s0.2mdn.net/879366/Enabler_01_250.js:117:663
+
+JavaScript warning: https://script.hotjar.com/modules.14b820ab47d618317075.js, line 2: Script terminated by timeout at:
+t<@https://script.hotjar.com/modules.14b820ab47d618317075.js:2:42046
+
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1692982820005	geckodriver	INFO	Listening on 127.0.0.1:50109
+1692982820522	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... debugging-port" "50110" "--remote-allow-hosts" "localhost" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofileY2GZcs"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1692982821135	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1692982821903	Marionette	INFO	Listening on port 50117
+Read port: 50117
+WebDriver BiDi listening on ws://127.0.0.1:50110
+1692982822453	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:50110/devtools/browser/161c7bed-1dfa-4ece-a2cb-5695c78b1820
+JavaScript warning: https://pagead2.googlesyndication.com/bg/53FW8zYQTkJ6aaIrXR-nTnykNiqudoH54JKD_I7-wfM.js line 2 > eval line 2489 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/53FW8zYQTkJ6aaIrXR-nTnykNiqudoH54JKD_I7-wfM.js line 2 > eval line 5780 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1692982846959	Marionette	INFO	Stopped listening on port 50117
+JavaScript warning: https://script.hotjar.com/modules.1cfaab4c8cd12d2d55e6.js, line 2: Script terminated by timeout at:
+t<@https://script.hotjar.com/modules.1cfaab4c8cd12d2d55e6.js:2:41914
+
