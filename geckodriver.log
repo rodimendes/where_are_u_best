@@ -269,3 +269,19 @@ t<@https://script.hotjar.com/modules.1cfaab4c8cd12d2d55e6.js:2:41914
 JavaScript warning: https://code.createjs.com/1.0.0/createjs.min.js, line 12: Script terminated by timeout at:
 a._handleTimeout@https://code.createjs.com/1.0.0/createjs.min.js:12:6739
 
+1693090816538	geckodriver	INFO	Listening on 127.0.0.1:51972
+1693090817079	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... debugging-port" "51973" "--remote-allow-hosts" "localhost" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile4ksRMF"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1693090817688	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1693090818334	Marionette	INFO	Listening on port 51980
+Read port: 51980
+WebDriver BiDi listening on ws://127.0.0.1:51973
+1693090819014	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:51973/devtools/browser/d5932a33-beaa-4600-aa16-f45a97e5334e
+JavaScript warning: https://pagead2.googlesyndication.com/bg/F8SkcvzQj7M3-2pXT2CJHOka8GJR2_XQE30kFDFsEbE.js line 2 > eval line 5474 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/53FW8zYQTkJ6aaIrXR-nTnykNiqudoH54JKD_I7-wfM.js line 2 > eval line 1183 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1693090831324	Marionette	INFO	Stopped listening on port 51980
