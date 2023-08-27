@@ -1,3 +1,5 @@
+#TODO Criar função para Chrome e outra para Firefox. Dentro do main.py, tentar duas vezes um e depois duas vezes o outro.
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -18,37 +20,33 @@ import mysql.connector
 
 load_dotenv()
 api_key = os.environ.get("OPENWEATHER_KEY")
-
-
+    
 def get_source_code(url):
     """
     Gets the source code and saves it for further verifications.
     The function returns the path to 'html' file and the player name.
     """
-
-    # chrome_options = webdriver.ChromeOptions()
-    # chrome_options.add_argument('--headless') #### Without window
-
+    # Firefox web browser
     firefox_options = Options()
     firefox_options.add_argument("-headless")
-    driver_firefox = webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=firefox_options)
-    driver_firefox.get(url)
+    driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=firefox_options)
 
-    # service = Service(ChromeDriverManager().install())
-    # driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
+    # # Chrome web browser
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_argument('-headless') #### Without window
+    # driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
 
-    # driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM, version="114.0.5735.90").install()), options=chrome_options)
-    # driver.get(url)
+    driver.get(url)
 
-    driver_firefox.find_element(By.XPATH, '//*[@id="js-cookie-notice"]/div/div/div/div/button[2]').click()
-    tournaments = driver_firefox.find_elements(By.CLASS_NAME, "sidebar-item")
+    driver.find_element(By.XPATH, '//*[@id="js-cookie-notice"]/div/div/div/div/button[2]').click()
+    tournaments = driver.find_elements(By.CLASS_NAME, "sidebar-item")
     for item in tournaments:
         time.sleep(3)
         item.click()
         time.sleep(3)
         with open(f"matches_source_code/{dt.date.today()}.html", "w") as file:
-            file.write(driver_firefox.page_source)
-    driver_firefox.quit()
+            file.write(driver.page_source)
+    driver.quit()
     return f"matches_source_code/{dt.date.today()}.html"
 
 
