@@ -14,6 +14,7 @@ def current_weather():
     with open("tournaments_files/tournaments.pkl", 'rb') as file:
         lista = pickle.load(file)
 
+    print(lista)
     today = dt.datetime.today().date()
     full_start_dt = lista.start_date + ' ' + lista.year
     full_end_dt = lista.end_date + ' ' + lista.year
@@ -26,7 +27,6 @@ def current_weather():
         start_date = dt.datetime.strptime(full_start_dt[pos], '%b %d %Y')
         if start_date.date() <= today and end_date.date() >= today:
         # Look at the tournament official starting date
-            print(row.city)
             cities.append(row.city)
             coord_params = {
                     "appid": api_key,

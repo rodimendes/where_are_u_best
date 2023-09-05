@@ -7,6 +7,8 @@ import mysql.connector
 import pandas as pd
 import pickle
 import os
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.options import Options
 
 
 def get_data_source(url):
@@ -14,10 +16,17 @@ def get_data_source(url):
     Gets the source code and saves it for further verifications.
     The function returns the path to 'html' file and the player name.
     """
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument('--headless')
-    service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    # Firefox web browser
+    firefox_options = Options()
+    firefox_options.add_argument("-headless")
+    driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=firefox_options)
+
+
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_argument('--headless')
+    # service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+    # driver = webdriver.Chrome(service=service, options=chrome_options)
+
     driver.get(url)
     with open(f"tournaments_files/tournaments_list.html", "w") as file:
         file.write(driver.page_source)
