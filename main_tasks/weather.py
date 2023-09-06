@@ -14,7 +14,6 @@ def current_weather():
     with open("tournaments_files/tournaments.pkl", 'rb') as file:
         lista = pickle.load(file)
 
-    print(lista)
     today = dt.datetime.today().date()
     full_start_dt = lista.start_date + ' ' + lista.year
     full_end_dt = lista.end_date + ' ' + lista.year
