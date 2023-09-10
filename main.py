@@ -54,7 +54,7 @@ except Exception as e:
     try:
         updating_matches()
     except:
-        email_message = f"Subject:🚨The update process is not working well.🚨\n\nCheck the update process as soon as posible to fix bugs."
+        email_message = f"Subject:🚨The update process is not working well.🚨\n\nCheck the update process as soon as posible to fix bugs.\n{e}"
         with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
             connection.starttls()
             connection.login(DEPARTURE_MAIL, PASS_DEPART_MAIL)
