@@ -26,26 +26,35 @@ def get_source_code(url):
     Gets the source code and saves it for further verifications.
     The function returns the path to 'html' file and the player name.
     """
-    # # Firefox web browser
-    # firefox_options = Options()
-    # # firefox_options.add_argument("-headless")
-    # driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=firefox_options)
+    # Firefox web browser
+    firefox_options = Options()
+    # firefox_options.add_argument("-headless")
+    driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=firefox_options)
 
-    # Chrome web browser
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument('--headless') #### Without window
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
+    # # Chrome web browser
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_argument('--headless') #### Without window
+    # driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
 
     driver.get(url)
 
-    driver.find_element(By.XPATH, '/html/body/section[2]/div/div/div/div/button[2]').click()  # //*[@id="js-cookie-notice"]/div/div/div/div/button[2]
-    tournaments = driver.find_elements(By.CLASS_NAME, "sidebar-item")
-    for item in tournaments:
+
+    while True:
+        driver.execute_script("window.scrollBy(0, 1000)")
         time.sleep(3)
-        item.click()
-        time.sleep(3)
+        if driver.execute_script("return window.innerHeight + window.pageYOffset >= document.body.offsetHeight"):
+            break
         with open(f"matches_source_code/{dt.date.today()}.html", "w") as file:
             file.write(driver.page_source)
+    # driver.find_element(By.XPATH, '/html/body/section[2]/div/div/div/div/button[2]').click()  # //*[@id="js-cookie-notice"]/div/div/div/div/button[2]
+    # tournaments = driver.find_elements(By.CLASS_NAME, "sidebar-item")
+    # for item in tournaments:
+    #     print(item)
+    #     time.sleep(3)
+    #     item.click()
+    #     time.sleep(3)
+    #     with open(f"matches_source_code/{dt.date.today()}.html", "w") as file:
+    #         file.write(driver.page_source)
     driver.quit()
     return f"matches_source_code/{dt.date.today()}.html"
 

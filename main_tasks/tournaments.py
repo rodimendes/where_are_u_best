@@ -21,11 +21,11 @@ def get_data_source(url):
     firefox_options.add_argument("-headless")
     driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=firefox_options)
 
-    # Chrome web browser
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument('--headless')
-    service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    # # Chrome web browser
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_argument('--headless')
+    # service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+    # driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get(url)
     with open(f"tournaments_files/tournaments_list.html", "w") as file:
