@@ -26,6 +26,8 @@ def current_weather():
         start_date = dt.datetime.strptime(full_start_dt[pos], '%b %d %Y')
         if start_date.date() <= today and end_date.date() >= today:
         # Look at the tournament official starting date
+            if row.city == "Buchareest":
+                row.city = "Bucharest"
             cities.append(row.city)
             coord_params = {
                     "appid": api_key,
@@ -36,9 +38,13 @@ def current_weather():
             coord_url = f"http://api.openweathermap.org/geo/1.0/direct"
             coord_response = requests.get(coord_url, params=coord_params)
             coord_response.raise_for_status() # returns an HTTPError object if an error has occurred during the process. It is used for debugging the requests module.
-            lat = coord_response.json()[0]['lat']
-            long = coord_response.json()[0]['lon']
-
+            try:
+                lat = coord_response.json()[0]['lat']
+                long = coord_response.json()[0]['lon']
+            except IndexError:
+                print(f"A city {row.city} doesn't work properly.")
+                lat = 0
+                long = 0
             # Getting current temperature and humidity
             parameters = {
                     "appid": api_key,
