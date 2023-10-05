@@ -18,7 +18,7 @@ def updating_matches():
     matches_df = match_by_match.to_dataframe(matches_dict)
     match_by_match.to_database(matches_df)
     weather.current_weather()
-    print("\033[92mMatches have been updated!\033[0m")
+    print("\033[92mMatches have been updated!!!\033[0m")
 
 
 if (today.weekday() == 6) and ("12:00" < str(hour) < "14:00"):
