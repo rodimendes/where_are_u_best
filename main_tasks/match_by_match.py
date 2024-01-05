@@ -78,6 +78,7 @@ def get_matches_info_to_dict(source_code):
         print()
         for tournament in raw_tournament_data:
             tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"})
+            print(tournament_matches)
             name = tournament["data-ui-title"]
             raw_city = tournament["data-ui-subtitle"]
             city_and_country = raw_city.split(",")
@@ -115,9 +116,13 @@ def get_matches_info_to_dict(source_code):
                         player2.append(player['aria-label'])
             print()
             print('Passo 4')
-            print()    
+            print()
             raw_score = tournament_matches.find_all("a", class_="tennis-match__match-link")
             score_data = []
+            print()
+            print('Passo 5')
+            print()
+            print('RAW SCORE', raw_score)
             for result in raw_score:
                 try:
                     score_data.append(result['title'])
