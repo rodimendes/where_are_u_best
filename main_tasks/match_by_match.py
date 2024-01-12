@@ -73,9 +73,6 @@ def get_matches_info_to_dict(source_code):
         winner = []
         temperature = []
         humidity = []
-        print()
-        print('Passo 1')
-        print()
         for tournament in raw_tournament_data:
             tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"})
             print(tournament_matches)
@@ -85,10 +82,6 @@ def get_matches_info_to_dict(source_code):
             city = city_and_country[0].strip().title()
             country = city_and_country[-1].strip().title()
             players = tournament_matches.find_all("a", class_="match-table__player match-table__player--link")
-            print()
-            print('Passo 2')
-            print()
-            print('LEN_PLAYERS', len(players))
             if len(players) == 0:
                 players = tournament_matches.find_all("span", class_="match-table__player-fullname")
                 for pos, player in enumerate(players):
@@ -103,9 +96,6 @@ def get_matches_info_to_dict(source_code):
                     else:
                         player2.append(full_name)
             else:
-                print()
-                print('Passo 3')
-                print()
                 for pos, player in enumerate(players):
                     if pos % 2 == 0:
                         player1.append(player['aria-label'])
@@ -114,15 +104,8 @@ def get_matches_info_to_dict(source_code):
                         country_list.append(country)
                     else:
                         player2.append(player['aria-label'])
-            print()
-            print('Passo 4')
-            print()
             raw_score = tournament_matches.find_all("a", class_="tennis-match__match-link")
             score_data = []
-            print()
-            print('Passo 5')
-            print()
-            print('RAW SCORE', raw_score)
             for result in raw_score:
                 try:
                     score_data.append(result['title'])
