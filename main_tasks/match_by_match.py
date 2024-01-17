@@ -75,7 +75,6 @@ def get_matches_info_to_dict(source_code):
         humidity = []
         for tournament in raw_tournament_data:
             tournament_matches = tournament.find(attrs={"data-status":"COMPLETE"})
-            print(tournament_matches)
             name = tournament["data-ui-title"]
             raw_city = tournament["data-ui-subtitle"]
             city_and_country = raw_city.split(",")
