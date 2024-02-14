@@ -24,11 +24,17 @@ try:
                         "limit": 1,
                         }
                         # Getting latitude and longitude
+            
+            print(city.city)
+
             coord_url = f"http://api.openweathermap.org/geo/1.0/direct"
             coord_response = requests.get(coord_url, params=coord_params)
             coord_response.raise_for_status() # returns an HTTPError object if an error has occurred during the process. It is used for debugging the requests module.
             lat = coord_response.json()[0]['lat']
             long = coord_response.json()[0]['lon']
+            
+            print(lat, long)
+
             tournaments_coord.at[pos, "lat"] = lat
             tournaments_coord.at[pos, "lon"] = long
 
