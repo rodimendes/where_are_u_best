@@ -35,7 +35,7 @@ def get_data_source(url):
 
 def get_tournaments_info_to_dict(html_file):
     """
-    Receives the source code as html file and gets 'name', 'city', 'country', 'surface', 'start_date', 'end_date' and 'year' from last tournaments, returning a dictionary.
+    Receives the source code as html file and returns 'name', 'city', 'country', 'surface', 'start_date', 'end_date' and 'year' from last tournaments, as a dictionary.
     """
     with open(html_file, 'r') as raw_file:
         soup = BeautifulSoup(raw_file, 'html.parser')
@@ -91,6 +91,7 @@ def to_dataframe(tournaments: dict):
         print("Saving full data")
         with open("tournaments_files/tournaments.pkl", "wb") as file:
             pickle.dump(tournaments_df, file)
+        
         return tournaments_df
 
 
